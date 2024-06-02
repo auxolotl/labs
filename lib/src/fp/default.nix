@@ -42,5 +42,17 @@ lib: {
       if f ? __functor
       then f.__args__ or lib.fp.args (f.__functor f)
       else builtins.functionArgs f;
+
+    # TODO: Document this.
+    withDynamicArgs = f: args: let
+      fArgs = lib.fp.args f;
+      common = builtins.intersectAttrs fArgs args;
+    in
+      if builtins.isAttrs args
+      then
+        if fArgs == {}
+        then f args
+        else f common
+      else f args;
   };
 }

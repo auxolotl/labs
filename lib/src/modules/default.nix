@@ -172,7 +172,7 @@ lib: {
         (lib.fp.args module);
     in
       if builtins.isFunction module
-      then module (args // dynamicArgs)
+      then lib.fp.withDynamicArgs module (args // dynamicArgs)
       else module;
 
     # TODO: Document this.
