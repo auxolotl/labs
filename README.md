@@ -20,7 +20,7 @@ may collaborate.
 | Idea      | An idea exists to solve a problem we currently have with Aux. Send a pull request to this repository creating a new directory for your experiment. The directory should contain a `README.md` file explaining the purpose of the experiment.                                   |
 | Iteration | Work on the experiment is done to solve for unknowns and come up with a good solution for the original problem. It may also be helpful to collaborate with others for feedback.                                                                                                |
 | Proposal  | The experiment has been satisfactorily completed and is ready to be considered for official adoption by the project. Discussion with the relevant Special Interest Group should take place to handle the transition of the project out of the lab and into its own repository. |
-| Adoption  | The experiment has been adopted and is now a part of Aux! The experiment should be moved to its own repository and the original experiment directory should be deleted                                                                                                         |
+| Adoption  | The experiment has been adopted and is now a part of Aux! The experiment should be moved to its own repository and the original experiment directory should be deleted.                                                                                                        |
 
 ## Experiments
 
