@@ -24,6 +24,6 @@ may collaborate.
 
 ## Experiments
 
-| Name             | Phase | Description                                              |
-| ---------------- | ----- | -------------------------------------------------------- |
-| [Aux Lib](./lib) | Idea  | A library of common functions used in the Aux ecosystem. |
+| Name             | Phase     | Description                                              |
+| ---------------- | --------- | -------------------------------------------------------- |
+| [Aux Lib](./lib) | Iteration | A library of common functions used in the Aux ecosystem. |
