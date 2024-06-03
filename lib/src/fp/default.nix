@@ -21,7 +21,7 @@ lib: {
     ##
     ## @type (List (Any -> Any)) -> Any -> Any
     pipe = fs: (
-      x: builtins.foldl' (value: f: f x) x fs
+      x: builtins.foldl' (value: f: f value) x fs
     );
 
     ## Reverse the order of arguments to a function that has two parameters.
@@ -37,13 +37,20 @@ lib: {
     ## @type (a -> b -> c -> d -> e) -> d -> c -> b -> a -> e
     flip4 = f: a: b: c: d: f d c b a;
 
-    # TODO: Document this.
+    ## Get the arguments of a function or functor.
+    ## An attribute set is returned with the arguments as keys. The values
+    ## are `true` when the argument has a default value specified and `false`
+    ## when it does not.
+    ##
+    ## @type Function -> Attrs
     args = f:
       if f ? __functor
-      then f.__args__ or lib.fp.args (f.__functor f)
+      then f.__args__ or (lib.fp.args (f.__functor f))
       else builtins.functionArgs f;
 
-    # TODO: Document this.
+    ## Create a function that is called with only the arguments it specifies.
+    ##
+    ## @type Attrs a => (a -> b) -> a -> b
     withDynamicArgs = f: args: let
       fArgs = lib.fp.args f;
       common = builtins.intersectAttrs fArgs args;

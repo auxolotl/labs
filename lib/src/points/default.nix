@@ -17,10 +17,7 @@ lib: {
     ## definitions. Unlike `fix`, the resulting value is also given a `__unfix__`
     ## attribute that is set to the original function passed to `fix'`.
     ##
-    ## FIXME: The below type annotation should include a mention of the `__unfix__`
-    ## value.
-    ##
-    ## @type (a -> a) -> a
+    ## @type (a -> a) -> a & { __unfix__ :: (a -> a) }
     fix' = f: let
       x =
         f x

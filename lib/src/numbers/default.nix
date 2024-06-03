@@ -49,7 +49,7 @@ lib: {
           then "F"
           else builtins.throw "Invalid hex digit.";
       in
-        lib.strings.concatMapSep
+        lib.strings.concatMap
         serialize
         (lib.numbers.into.base 16 value);
     };

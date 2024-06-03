@@ -12,7 +12,7 @@ lib: {
         if builtins.stringLength value <= 207 && validate value != null
         then builtins.unsafeDiscardStringContext value
         else
-          lib.fp.pipe value [
+          lib.fp.pipe [
             # Get rid of string context. This is safe under the assumption that the
             # resulting string is only used as a derivation name
             builtins.unsafeDiscardStringContext
@@ -36,6 +36,7 @@ lib: {
               if builtins.stringLength x == 0
               then "unknown"
               else x)
-          ];
+          ]
+          value;
   };
 }

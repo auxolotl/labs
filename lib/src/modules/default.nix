@@ -3,6 +3,7 @@ lib: {
     from = {
       ## Create a module from a JSON file.
       ##
+      ## @notest
       ## @type Path -> Module
       json = file: {
         __file__ = file;
@@ -11,6 +12,7 @@ lib: {
 
       ## Create a module from a TOML file.
       ##
+      ## @notest
       ## @type Path -> Module
       toml = file: {
         __file__ = file;
@@ -19,7 +21,12 @@ lib: {
     };
 
     apply = {
-      # TODO: Document this.
+      ## Apply custom definitions such as `merge` and `when` to a definition.
+      ## Note that this function does not perform actiosn like `merge`, but
+      ## instead pulls out the merge contents to be processed by the module
+      ## system.
+      ##
+      ## @type Definition -> List (Definition | (List Definition))
       properties = definition:
         if lib.types.is "merge" definition
         then builtins.concatMap lib.modules.apply.properties definition.content
@@ -32,7 +39,11 @@ lib: {
           else []
         else [definition];
 
-      # TODO: Document this.
+      ## Apply overrides for a definition. This uses the priority system
+      ## to determine which definition to use. The most important (lowest
+      ## priority) choice will be used.
+      ##
+      ## @type List Definition -> { highestPriority :: Int, values :: List (Definition | (List Definition)) }
       overrides = definitions: let
         getPriority = definition:
           if lib.types.is "override" definition.value
@@ -64,7 +75,9 @@ lib: {
           definitions;
       };
 
-      # TODO: Document this.
+      ## Apply ordering for prioritized definitions.
+      ##
+      ## @type List Definition -> List Definition
       order = definitions: let
         normalize = definition:
           if lib.types.is "order" definition
@@ -80,7 +93,10 @@ lib: {
       in
         builtins.sort compare normalized;
 
-      # TODO: Document this.
+      ## Normalize the type of an option. This will set a default type if none
+      ## was provided.
+      ##
+      ## @type List String -> Option -> Option
       fixup = location: option:
         if option.type.getSubModules or null == null
         then
@@ -95,32 +111,43 @@ lib: {
             options = [];
           };
 
-      # TODO: Document this.
+      ## Invert the structure of `merge`, `when`, and `override` definitions so
+      ## that they apply to each individual attribute in their respective sets.
+      ## Note that this function _only_ supports attribute sets within specialized
+      ## definitions such as `when` and `override`. Other values like lists will
+      ## throw a type error.
+      ##
+      ## @type Definition -> List Definition
       invert = config:
         if lib.types.is "merge" config
         then builtins.concatMap lib.modules.apply.invert config.content
         else if lib.types.is "when" config
         then
           builtins.map
-          (builtins.mapAttrs (key: value: lib.modules.when config.condition value))
+          (builtins.mapAttrs (name: value: lib.modules.when config.condition value))
           (lib.modules.apply.invert config.content)
         else if lib.types.is "override" config
         then
           builtins.map
-          (builtins.mapAttrs (key: value: lib.modules.override config.priority value))
+          (builtins.mapAttrs (name: value: lib.modules.override config.priority value))
           (lib.modules.apply.invert config.content)
         else [config];
     };
 
     validate = {
-      # TODO: Document this.
+      ## Check that a module only specifies supported attributes.
+      ##
+      ## @type Attrs -> Bool
       keys = module: let
         invalid = builtins.removeAttrs module lib.modules.VALID_KEYS;
       in
         invalid == {};
     };
 
-    # TODO: Document this.
+    ## Modules only support certain keys at the root level. This list determines
+    ## the valid attributes that users can supply.
+    ##
+    ## @type List String
     VALID_KEYS = [
       "__file__"
       "__key__"
@@ -132,7 +159,10 @@ lib: {
       "meta"
     ];
 
-    # TODO: Document this.
+    ## Normalize a module to a standard structure. All other information will be
+    ## lost in the conversion.
+    ##
+    ## @type String -> String -> Attrs -> Module
     normalize = file: key: module: let
       invalid = builtins.removeAttrs module lib.modules.VALID_KEYS;
       invalidKeys = builtins.concatStringsSep ", " (builtins.attrNames invalid);
@@ -159,7 +189,11 @@ lib: {
       }
       else builtins.throw "Module `${key}` has unsupported attribute(s): ${invalidKeys}";
 
-    # TODO: Document this.
+    ## Convert a module that is either a function or an attribute set into
+    ## a resolved attribute set. If the module was a function then it will
+    ## be evaluated and the result will be returned.
+    ##
+    ## @type String -> Attrs | (Attrs -> Attrs) -> Attrs -> Attrs
     resolve = key: module: args: let
       dynamicArgs =
         builtins.mapAttrs
@@ -175,24 +209,38 @@ lib: {
       then lib.fp.withDynamicArgs module (args // dynamicArgs)
       else module;
 
-    # TODO: Document this.
+    ## The default priority to set for values that do not have one provided.
+    ##
+    ## @type Int
     DEFAULT_PRIORITY = 100;
 
     ## Allow for sorting the values provided to a module by priority. The
     ## most important value will be used.
     ##
-    ## @type Int -> a -> Priority a
+    ## @notest
+    ## @type Int -> a -> Attrs
     order = priority: value: {
       __type__ = "order";
       inherit priority value;
     };
 
     orders = {
-      # TODO: Document this.
+      ## Order a value before others.
+      ##
+      ## @notest
+      ## @type a -> Attrs
       before = lib.modules.order 500;
-      # TODO: Document this.
+
+      ## Use the default ordering for a value.
+      ##
+      ## @notest
+      ## @type a -> Attrs
       default = lib.modules.order 1000;
-      # TODO: Document this.
+
+      ## Order a value after others.
+      ##
+      ## @notest
+      ## @type a -> Attrs
       after = lib.modules.order 1500;
     };
 
@@ -201,36 +249,70 @@ lib: {
     ## @type List Module -> List (String | Path)
     getFiles = builtins.map (module: module.__file__);
 
-    # TODO: Document this.
+    ## Create a conditional value which is only used when the condition's
+    ## value is `true`.
+    ##
+    ## @notest
+    ## @type Bool -> a -> When a
     when = condition: content: {
       __type__ = "when";
       inherit condition content;
     };
 
-    # TODO: Document this.
+    ## Merge module attribute sets when evaluated in the module system.
+    ##
+    ## @notest
+    ## @type List Attrs -> Attrs
     merge = content: {
       __type__ = "merge";
       inherit content;
     };
 
-    # TODO: Document this.
+    ## Create a value override which can replace other definitions if it
+    ## has the higher priority.
+    ##
+    ## @notest
+    ## @type Int -> a -> Attrs
     override = priority: content: {
       __type__ = "override";
       inherit priority content;
     };
 
     overrides = {
-      # TODO: Document this.
+      ## Create an override used for setting the `default.value` from an
+      ## option. This uses the lowest priority of all predefined overrides.
+      ##
+      ## @notest
+      ## @type a -> Attrs
       option = lib.modules.override 1500;
-      # TODO: Document this.
+
+      ## Create a default override for a value. This uses a very low priority
+      ## so that it can easily be overridden.
+      ##
+      ## @notest
+      ## @type a -> Attrs
       default = lib.modules.override 1000;
-      # TODO: Document this.
+
+      ## Create a high priority override for a value. This is not the highest
+      ## priority possible, but it will override nearly everything else except
+      ## for very explicit cases.
+      ##
+      ## @notest
+      ## @type a -> Attrs
       force = lib.modules.override 50;
-      # TODO: Document this.
+
+      ## Create a high priority override intended to be used only for VM targets.
+      ## This allows for forcing certain values even if a user has otherwise
+      ## specified `lib.modules.overrides.force`.
+      ##
+      ## @notest
+      ## @type a -> Attrs
       vm = lib.modules.override 10;
     };
 
-    # TODO: Document this.
+    ## Combine multiple modules together.
+    ##
+    ## @type List String -> List Module -> { matched :: Attrs, unmatched :: List Definition }
     combine = prefix: modules: let
       getConfig = module:
         builtins.map
@@ -246,16 +328,15 @@ lib: {
         modules;
 
       process = prefix: options: configs: let
-        # TODO: Document this.
         byName = attr: f: modules:
           builtins.zipAttrsWith
-          (lib.fp.const builtins.concatLists)
+          (key: value: builtins.concatLists value)
           (builtins.map (
               module: let
                 subtree = module.${attr};
               in
                 if builtins.isAttrs subtree
-                then builtins.mapAttrs (key: f module) subtree
+                then builtins.mapAttrs (name: f module) subtree
                 else builtins.throw "Value for `${builtins.concatStringsSep "." prefix} is of type `${builtins.typeOf subtree}` but an attribute set was expected."
             )
             modules);
@@ -348,7 +429,7 @@ lib: {
         matched = builtins.mapAttrs (key: value: value.matched) resultsByName;
 
         unmatched =
-          builtins.mapAttrs (key: value: value.unmatched) resultsByName
+          builtins.mapAttrs (name: value: value.unmatched) resultsByName
           // builtins.removeAttrs definitionsByName' (builtins.attrNames matched);
       in {
         inherit matched;
@@ -374,7 +455,10 @@ lib: {
     in
       process prefix modules configs;
 
-    # TODO: Document this.
+    ## Run a set of modules. Custom arguments can also be supplied which will
+    ## be provided to all modules statically as they are not modifiable.
+    ##
+    ## @type { modules? :: List (Attrs | (Attrs -> Attrs)), args? :: Attrs, prefix? :: List String } -> { type :: Module, extend :: lib.modules.run, options :: Attrs, config :: Attrs, __module__ :: Attrs }
     run = settings @ {
       modules ? [],
       args ? {},
@@ -395,7 +479,6 @@ lib: {
           prefix = extensions.prefix or settings.prefix or [];
         };
 
-      # TODO: Document this.
       collect = let
         load = args: file: key: module: let
           moduleFromValue = lib.modules.normalize file key (lib.modules.resolve key module args);
@@ -532,7 +615,7 @@ lib: {
         declared =
           lib.attrs.mapRecursiveWhen
           (value: !(lib.types.is "option" value))
-          (key: value: value.value)
+          (name: value: value.value)
           options;
 
         freeform = let

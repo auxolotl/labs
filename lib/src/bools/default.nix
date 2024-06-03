@@ -1,10 +1,21 @@
 lib: {
   bools = {
     into = {
+      ## Convert a boolean value into a string.
+      ##
+      ## @type Bool -> String
       string = value:
         if value
         then "true"
         else "false";
+
+      ## Convert a boolean into either the string "yes" or "no".
+      ##
+      ## @type Bool -> String
+      yesno = value:
+        if value
+        then "yes"
+        else "no";
     };
 
     ## Choose between two values based on a condition. When true, the first value

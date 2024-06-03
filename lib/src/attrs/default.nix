@@ -13,16 +13,18 @@ lib: {
     mergeRecursiveUntil = predicate: x: y: let
       process = path:
         builtins.zipAttrsWith (
-          key: values: let
-            currentPath = path ++ [key];
+          name: values: let
+            currentPath = path ++ [name];
             isSingleValue = builtins.length values == 1;
             isComplete =
               predicate currentPath
               (builtins.elemAt values 1)
               (builtins.elemAt values 0);
           in
-            if isSingleValue || isComplete
+            if isSingleValue
             then builtins.elemAt values 0
+            else if isComplete
+            then builtins.elemAt values 1
             else process currentPath values
         );
     in
@@ -43,13 +45,13 @@ lib: {
     ##
     ## @type (List String) -> a -> Attrs -> a | b
     select = path: fallback: target: let
-      key = builtins.head path;
+      name = builtins.head path;
       rest = builtins.tail path;
     in
       if path == []
       then target
-      else if target ? ${key}
-      then lib.attrs.select rest fallback target.${key}
+      else if target ? ${name}
+      then lib.attrs.select rest fallback target.${name}
       else fallback;
 
     ## Get a value from an attribute set by a path. If the path does not exist,
@@ -61,10 +63,12 @@ lib: {
       error = builtins.throw "Path not found in attribute set: ${pathAsString}";
     in
       if lib.attrs.has path target
-      then lib.attrs.select path target
+      then lib.attrs.select path null target
       else error;
 
-    # TODO: Document this.
+    ## Create a nested attribute set with a value as the leaf node.
+    ##
+    ## @type (List String) -> a -> Attrs
     set = path: value: let
       length = builtins.length path;
       process = depth:
@@ -80,13 +84,13 @@ lib: {
     ##
     ## @type (List String) -> Attrs -> Bool
     has = path: target: let
-      key = builtins.head path;
+      name = builtins.head path;
       rest = builtins.tail path;
     in
       if path == []
       then true
-      else if target ? ${key}
-      then lib.attrs.has rest target.${key}
+      else if target ? ${name}
+      then lib.attrs.has rest target.${name}
       else false;
 
     ## Depending on a given condition, either use the given value or an empty
@@ -98,43 +102,46 @@ lib: {
       then value
       else {};
 
-    ## Map an attribute set's keys and values to a list.
+    ## Map an attribute set's names and values to a list.
     ##
     ## @type Any a => (String -> Any -> a) -> Attrs -> List a
     mapToList = f: target:
-      builtins.map (key: f key target.${key}) (builtins.attrNames target);
+      builtins.map (name: f name target.${name}) (builtins.attrNames target);
 
-    # TODO: Document this.
+    ## Map an attribute set recursively. Only non-set leaf nodes will be mapped.
+    ##
+    ## @type (List String -> Any -> Any) -> Attrs -> Attrs
     mapRecursive = f: target:
       lib.attrs.mapRecursiveWhen (lib.fp.const true) f target;
 
-    # TODO: Document this.
+    ## Map an attribute set recursively when a given predicate returns true.
+    ## Only leaf nodes according to the predicate will be mapped.
+    ##
+    ## @type (Attrs -> Bool) -> (List String -> Any -> Any) -> Attrs -> Attrs
     mapRecursiveWhen = predicate: f: target: let
       process = path:
         builtins.mapAttrs (
-          key: value:
+          name: value:
             if builtins.isAttrs value && predicate value
-            then process (path ++ [key]) value
-            else f (path ++ [key]) value
+            then process (path ++ [name]) value
+            else f (path ++ [name]) value
         );
     in
       process [] target;
 
-    # TODO: Document this.
+    ## Filter an attribute set by a given predicate. The filter is only performed
+    ## on the base level of the attribute set.
+    ##
+    ## @type (String -> Any -> Bool) -> Attrs -> Attrs
     filter = predicate: target: let
-      keys = builtins.attrNames target;
-      process = key: let
-        value = target.${key};
+      names = builtins.attrNames target;
+      process = name: let
+        value = target.${name};
       in
-        if predicate key value
-        then [
-          {
-            name = key;
-            value = value;
-          }
-        ]
+        if predicate name value
+        then [{inherit name value;}]
         else [];
-      valid = builtins.concatMap process keys;
+      valid = builtins.concatMap process names;
     in
       builtins.listToAttrs valid;
   };

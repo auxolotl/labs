@@ -151,7 +151,7 @@ lib: {
     # TODO: Document this.
     unspecified = lib.types.create {
       name = "Unspecified";
-      description = "unspecified value";
+      description = "unspecified type";
     };
 
     # TODO: Document this.
@@ -388,20 +388,20 @@ lib: {
           merge = location: definitions: let
             normalize = definition:
               builtins.mapAttrs
-              (key: value: {
+              (name: value: {
                 __file__ = definition.__file__;
                 value = value;
               })
               definition.value;
             normalized = builtins.map normalize definitions;
-            zipper = key: definitions:
-              (lib.options.merge.definitions (location ++ [key]) type definitions).optional;
+            zipper = name: definitions:
+              (lib.options.merge.definitions (location ++ [name]) type definitions).optional;
             filtered =
               lib.attrs.filter
-              (key: value: value ? value)
+              (name: value: value ? value)
               (builtins.zipAttrsWith zipper normalized);
           in
-            builtins.mapAttrs (key: value: value.value) filtered;
+            builtins.mapAttrs (name: value: value.value) filtered;
           getSubOptions = prefix: type.getSubOptions (prefix ++ ["<name>"]);
           getSubModules = type.getSubModules;
           withSubModules = modules: lib.types.attrs.of (type.withSubModules modules);
@@ -421,14 +421,14 @@ lib: {
           merge = location: definitions: let
             normalize = definition:
               builtins.mapAttrs
-              (key: value: {
+              (name: value: {
                 __file__ = definition.__file__;
                 value = value;
               })
               definition.value;
             normalized = builtins.map normalize definitions;
-            zipper = key: definitions: let
-              merged = lib.options.merge.definitions (location ++ [key]) type definitions;
+            zipper = name: definitions: let
+              merged = lib.options.merge.definitions (location ++ [name]) type definitions;
             in
               merged.optional.value or type.fallback.value or merged.merged;
           in
@@ -494,7 +494,14 @@ lib: {
                     j: value: let
                       resolved =
                         lib.options.merge.definitions
-                        (location ++ ["[definition ${builtins.toString i}-entry ${j}]"]);
+                        (location ++ ["[definition ${builtins.toString i}-entry ${j}]"])
+                        type
+                        [
+                          {
+                            file = definition.file;
+                            value = value;
+                          }
+                        ];
                     in
                       resolved.optional
                   )
@@ -503,7 +510,7 @@ lib: {
               definitions;
             merged = builtins.concatLists result;
             filtered = builtins.filter (definition: definition ? value) merged;
-            values = lib.optiosn.getDefinitionValues filtered;
+            values = lib.options.getDefinitionValues filtered;
           in
             values;
           getSubOptions = prefix: type.getSubOptions (prefix ++ ["*"]);

@@ -33,7 +33,9 @@ lib: {
         # TODO: Improve this error message to show the location and definitions for the option.
         else builtins.throw "Cannot merge definitions.";
 
-      # TODO: Document this.
+      ## Merge multiple option definitions together.
+      ##
+      ## @type Location -> Type -> List Definition
       definitions = location: type: definitions: let
         identifier = lib.options.getIdentifier location;
         resolve = definition: let
@@ -81,11 +83,14 @@ lib: {
         };
       };
 
+      ## Merge multiple option declarations together.
+      ##
+      ## @type Location -> List Option
       declarations = location: options: let
         merge = result: option: let
           mergedType = result.type.mergeType option.options.type.functor;
           isTypeMergeable = mergedType != null;
-          shared = key: option.options ? ${key} && result ? ${key};
+          shared = name: option.options ? ${name} && result ? ${name};
           typeSet = lib.attrs.when ((shared "type") && isTypeMergeable) {
             type = mergedType;
           };
@@ -212,9 +217,12 @@ lib: {
     ## @type List String -> String
     getIdentifier = location: let
       special = [
-        "<name>" # attrsOf (submodule {})
-        "*" # listOf (submodule {})
-        "<function body>" # functionTo
+        # lib.types.attrs.of (lib.types.submodule {})
+        "<name>"
+        # lib.types.list.of (submodule {})
+        "*"
+        # lib.types.function
+        "<function body>"
       ];
       escape = part:
         if builtins.elem part special
@@ -258,7 +266,9 @@ lib: {
     in
       lib.strings.concatMap serialize definitions;
 
-    # TODO: Document this.
+    ## Run a set of definitions, calculating the resolved value and associated information.
+    ##
+    ## @type Location -> Option -> List Definition -> String & { value :: Any, highestPriority :: Int, isDefined :: Bool, files :: List String, definitions :: List Any, definitionsWithLocations :: List Definition }
     run = location: option: definitions: let
       identifier = lib.options.getIdentifier location;
 

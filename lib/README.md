@@ -75,12 +75,40 @@ in
 }
 ```
 
-Successful tests will return `true` while failing test will resolve with `false`.
+Successful tests will return `true` while failing test will resolve with `false`. You can run
+all tests with the following command:
+
+```shell
+./test.sh
+```
+
+If you want to run a specific test suite, you can run the command, specifying the directory
+to the tests file:
+
+```shell
+./test.sh $namespace
+```
+
+For example, to run the tests for only `attrs`, use the following command:
+
+```shell
+./test.sh attrs
+```
 
 ### Formatting
 
+> **Note:** To keep this flake light and keep its inputs empty we do not include a package
+> set which would provide a formatter. Instead please run `nix run nixpkgs#nixfmt-rfc-style`
+> until an improved solution is available.
+
 All code in this project must be formatted using the provided formatter in the `flake.nix`
-file. You can run this formatter using the command `nix fmt`.
+file. You can run this formatter using the command `nix fmt` (not currently available).
+
+### Code Quality
+
+In order to keep the project approachable and easy to maintain, certain patterns are not allowed.
+In particular, the use of `with` and `rec` are not allowed. Additionally, you should prefer the
+fully qualified name of a variable rather than creating intermediate ones using `inherit`.
 
 ### Adding Functionality
 

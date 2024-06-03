@@ -40,8 +40,8 @@ let
   mergeAttrsRecursiveUntil = predicate: x: y: let
     process = path:
       builtins.zipAttrsWith (
-        key: values: let
-          currentPath = path ++ [key];
+        name: values: let
+          currentPath = path ++ [name];
           isSingleValue = builtins.length values == 1;
           isComplete =
             predicate currentPath

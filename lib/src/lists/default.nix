@@ -1,7 +1,11 @@
 lib: {
   lists = {
     from = {
-      # TODO: Document this.
+      ## Convert a value to a list. If the value is already a list,
+      ## it will be returned as-is. If the value is not a list, it
+      ## will be wrapped in a list.
+      ##
+      ## @type a | (List a) -> List a
       any = value:
         if builtins.isList value
         then value
@@ -11,7 +15,7 @@ lib: {
     sort = {
       ## Perform a natural sort on a list of strings.
       ##
-      ## @type List -> List
+      ## @type List String -> List String
       natural = list: let
         vectorize = string: let
           serialize = part:
@@ -27,21 +31,29 @@ lib: {
         builtins.map (x: builtins.elemAt x 1) (builtins.sort isLess prepared);
     };
 
-    # TODO: Document this.
+    ## Map a list using both the index and value of each item. The
+    ## index starts at 0.
+    ##
+    ## @type (Int -> a -> b) -> List a -> List b
     mapWithIndex = f: list:
       builtins.genList
       (i: f i (builtins.elemAt list i))
       (builtins.length list);
 
-    # TODO: Document this.
+    ## Map a list using both the index and value of each item. The
+    ## index starts at 1.
+    ##
+    ## @type (Int -> a -> b) -> List a -> List b
     mapWithIndex1 = f: list:
       builtins.genList
       (i: f (i + 1) (builtins.elemAt list i))
       (builtins.length list);
 
-    ## Compare two lists.
+    ## Compare two lists using a custom compare function. The compare
+    ## function is called for each element in the lists that need to
+    ## be compared.
     ##
-    ## @type (a -> b -> Int) -> List a -> List b -> Int
+    ## @type (a -> b -> -1 | 0 | 1) -> List a -> List b -> Int
     compare = compare: a: b: let
       result = compare (builtins.head a) (builtins.head b);
     in
@@ -60,7 +72,7 @@ lib: {
     ##
     ## @type List a -> a
     last = list:
-      assert lib.assertMsg (list != []) "List cannot be empty";
+      assert lib.errors.trace (list != []) "List cannot be empty";
         builtins.elemAt list (builtins.length list - 1);
 
     ## Slice part of a list to create a new list.
@@ -137,7 +149,9 @@ lib: {
         else [value]
       else [];
 
-    # TODO: Document this.
+    ## Count the number of items in a list that satisfy a given predicate.
+    ##
+    ## @type (a -> Bool) -> List a -> Int
     count = predicate: list:
       builtins.foldl' (
         total: value:
@@ -148,7 +162,9 @@ lib: {
       0
       list;
 
-    # TODO: Document this.
+    ## Remove duplicate items from a list.
+    ##
+    ## @type List -> List
     unique = list: let
       filter = result: value:
         if builtins.elem value result
