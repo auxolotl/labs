@@ -1,7 +1,9 @@
 lib: {
   paths = {
     into = {
-      # TODO: Document this
+      ## Convert a path into a derivation.
+      ##
+      ## @type Path -> Derivation
       drv = value: let
         path = builtins.storePath value;
         result = {
@@ -19,7 +21,9 @@ lib: {
     };
 
     validate = {
-      # TODO: Document this.
+      ## Check whether a path is contained within the Nix store.
+      ##
+      ## @type Path -> Bool
       store = value:
         if lib.strings.stringifiable value
         then

@@ -122,12 +122,22 @@ lib: {
         || value ? outPath
         || value ? __toString;
 
-      # TODO: Document this.
+      ## Check whether a string is empty. This includes strings that
+      ## only contain whitespace.
+      ##
+      ## @type String -> Bool
       empty = value:
         builtins.match "[ \t\n]*" value != null;
     };
 
+    ## A table of ASCII characters mapped to their integer character code.
+    ##
+    ## @type Attrs
     ascii = import ./ascii.nix;
+
+    ## Lists of both upper and lower case ASCII characters.
+    ##
+    ## @type { upper :: List String, lower :: List String }
     alphabet = import ./alphabet.nix;
 
     ## Concatenate a list of strings together.

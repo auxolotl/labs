@@ -8,14 +8,20 @@ lib: {
     is = name: value:
       value.__type__ or null == name;
 
-    # TODO: Document this.
+    ## Assign a type to an attribute set.
+    ##
+    ## @type String -> Attrs -> Attrs
     set = name: value:
       value
       // {
         __type__ = name;
       };
 
-    # TODO: Document this.
+    ## Create a default functor for a type. This handles merging of type values
+    ## by referencing wrapped and payload values. See the types implemented below
+    ## such as `lib.types.any` for examples.
+    ##
+    ## @type String -> Attrs
     functor = name: {
       inherit name;
       type =
@@ -28,7 +34,9 @@ lib: {
       merge = null;
     };
 
-    # TODO: Document this.
+    ## Merge two types.
+    ##
+    ## @type Attrs -> Attrs -> Attrs
     merge = f: g: let
       wrapped = f.wrapped.mergeType g.wrapped.functor;
       payload = f.merge f.payload g.payload;
@@ -43,7 +51,9 @@ lib: {
       then f.type payload
       else null;
 
-    # TODO: Document this.
+    ## Create a new type.
+    ##
+    ## @type Attrs -> Attrs
     create = settings @ {
       name,
       description ? name,
@@ -73,14 +83,18 @@ lib: {
         ;
     };
 
-    # TODO: Document this.
+    ## Add a check to a type.
+    ##
+    ## @type Attrs -> (Any -> Bool) -> Attrs
     withCheck = type: check:
       type
       // {
         check = value: type.check value && check value;
       };
 
-    # TODO: Document this.
+    ## A type that allows any value and will only use a single definition.
+    ##
+    ## @type Attrs
     raw = lib.types.create {
       name = "Raw";
       description = "raw value";
@@ -88,7 +102,10 @@ lib: {
       merge = lib.options.merge.one;
     };
 
-    # TODO: Document this.
+    ## A type that allows any value and will merge the definitions depending on
+    ## their data type.
+    ##
+    ## @type Attrs
     any = lib.types.create {
       name = "Any";
       description = "any";
@@ -148,13 +165,18 @@ lib: {
         merge location definitions;
     };
 
-    # TODO: Document this.
+    ## A fallback type that is used when a type is not specified for an option.
+    ##
+    ## @type Attrs
     unspecified = lib.types.create {
       name = "Unspecified";
       description = "unspecified type";
     };
 
-    # TODO: Document this.
+    ## A type that allows a boolean value. The merged definitions must all be
+    ## the same.
+    ##
+    ## @type Attrs
     bool = lib.types.create {
       name = "Bool";
       description = "boolean";
@@ -162,7 +184,10 @@ lib: {
       merge = lib.options.merge.equal;
     };
 
-    # TODO: Document this.
+    ## A type that allows an integer value. The merged definitions must all be
+    ## the same.
+    ##
+    ## @type Attrs
     int = lib.types.create {
       name = "Int";
       description = "signed integer";
@@ -172,7 +197,9 @@ lib: {
 
     ints = let
       description = start: end: "${builtins.toString start} and ${builtins.toString end} (inclusive)";
-      # TODO: Document this.
+      ## Create a type that allows an integer value between a given range.
+      ##
+      ## @type Int -> Int -> Attrs
       between = start: end:
         assert lib.errors.trace (start <= end) "lib.types.ints.between start must be less than or equal to end";
           lib.types.withCheck
@@ -183,7 +210,10 @@ lib: {
             description = "integer between ${description start end}";
           };
 
-      # TODO: Document this.
+      ## Create a type that allows an integer value between a given range with a specific
+      ## number of bits.
+      ##
+      ## @type Int -> Int -> Attrs
       sign = bits: range: let
         start = 0 - (range / 2);
         end = range / 2 - 1;
@@ -194,7 +224,10 @@ lib: {
           description = "${builtins.toString bits} bit signed integer between ${description start end}";
         };
 
-      # TODO: Document this.
+      ## Create a type that allows an unsigned integer value between a given range with a specific
+      ## number of bits.
+      ##
+      ## @type Int -> Int -> Attrs
       unsign = bits: range: let
         start = 0;
         end = range - 1;
@@ -205,10 +238,11 @@ lib: {
           description = "${builtins.toString bits} bit unsigned integer between ${description start end}";
         };
     in {
-      # TODO: Document this.
       inherit between;
 
-      # TODO: Document this.
+      ## A type that allows a positive integer value.
+      ##
+      ## @type Attrs
       positive =
         lib.types.withCheck
         lib.types.int
@@ -218,7 +252,9 @@ lib: {
           description = "positive integer";
         };
 
-      # TODO: Document this.
+      ## A type that allows a positive integer value or zero.
+      ##
+      ## @type Attrs
       unsigned =
         lib.types.withCheck
         lib.types.int
@@ -228,23 +264,43 @@ lib: {
           description = "unsigned integer";
         };
 
-      # TODO: Document this.
+      ## A type that allows an 8bit unsigned integer.
+      ##
+      ## @type Attrs
       u8 = unsign 8 256;
-      # TODO: Document this.
+
+      ## A type that allows a 16bit unsigned integer.
+      ##
+      ## @type Attrs
       u16 = unsign 16 65536;
-      # TODO: Document this.
+
+      ## A type that allows a 32bit unsigned integer.
+      ##
+      ## @type Attrs
       u32 = unsign 32 4294967296;
+
       # u64 = unsign 64 18446744073709551616;
 
-      # TODO: Document this.
+      ## A type that allows an 8bit signed integer.
+      ##
+      ## @type Attrs
       s8 = sign 8 256;
-      # TODO: Document this.
+
+      ## A type that allows a 16bit signed integer.
+      ##
+      ## @type Attrs
       s16 = sign 16 65536;
-      # TODO: Document this.
+
+      ## A type that allows a 32bit signed integer.
+      ##
+      ## @type Attrs
       s32 = sign 32 4294967296;
     };
 
-    # TODO: Document this.
+    ## A type that allows a floating point value. The merged definitions must all be
+    ## the same.
+    ##
+    ## @type Attrs
     float = lib.types.create {
       name = "Float";
       description = "floating point number";
@@ -252,13 +308,16 @@ lib: {
       merge = lib.options.merge.equal;
     };
 
-    # TODO: Document this.
+    ## A type that allows a number value. This can be either an integer or a float.
+    ##
+    ## @type Attrs
     number = lib.types.either lib.types.int lib.types.float;
 
-    # TODO: Document this.
     numbers = let
       description = start: end: "${builtins.toString start} and ${builtins.toString end} (inclusive)";
-      # TODO: Document this.
+      ## Create a type that allows a number value between a given range.
+      ##
+      ## @type Int -> Int -> Attrs
       between = start: end:
         assert lib.errors.trace (start <= end) "lib.types.numbers.between start must be less than or equal to end";
           lib.types.withCheck
@@ -269,10 +328,11 @@ lib: {
             description = "numbereger between ${description start end}";
           };
     in {
-      # TODO: Document this.
       inherit between;
 
-      # TODO: Document this.
+      ## A type that allows a positive number value.
+      ##
+      ## @type Attrs
       positive =
         lib.types.withCheck
         lib.types.int
@@ -282,7 +342,9 @@ lib: {
           description = "positive number";
         };
 
-      # TODO: Document this.
+      ## A type that allows a positive number value or zero.
+      ##
+      ## @type Attrs
       positiveOrZero =
         lib.types.withCheck
         lib.types.int
@@ -293,10 +355,15 @@ lib: {
         };
     };
 
-    # TODO: Document this.
+    ## A type that allows a port value. This values an unsigned 16bit integer.
+    ##
+    ## @type Attrs
     port = lib.types.ints.u16;
 
-    # TODO: Document this.
+    ## A type that allows a string value. The merged definitions must all be
+    ## the same.
+    ##
+    ## @type Attrs
     string = lib.types.create {
       name = "String";
       description = "string";
@@ -305,7 +372,10 @@ lib: {
     };
 
     strings = {
-      # TODO: Document this.
+      ## A type that allows a non-empty string value. The merged definitions must all be
+      ## the same.
+      ##
+      ## @type Attrs
       required = lib.types.create {
         name = "StringNonEmpty";
         description = "non-empty string";
@@ -313,7 +383,10 @@ lib: {
         merge = lib.options.merge.equal;
       };
 
-      # TODO: Document this.
+      ## Create a type that allows a string value that matches a given pattern. The merged
+      ## definitions must all be the same.
+      ##
+      ## @type String -> Attrs
       matching = pattern:
         lib.types.create {
           name = "StringMatching ${pattern}";
@@ -322,7 +395,10 @@ lib: {
           merge = lib.options.merge.equal;
         };
 
-      # TODO: Document this.
+      ## Create a type that allows a string value joined by a separator. The merged
+      ## definitions must all be the same.
+      ##
+      ## @type String -> Attrs
       concat = separator:
         lib.types.create {
           name = "StringConcat";
@@ -346,7 +422,10 @@ lib: {
             };
         };
 
-      # TODO: Document this.
+      ## A type that allows a string value that is a single line with an optional new line
+      ## at the end.
+      ##
+      ## @type Attrs
       line = let
         matcher = lib.types.strings.matching "[^\n\r]*\n?";
       in
@@ -360,12 +439,17 @@ lib: {
             (matcher.merge location definitions);
         };
 
-      # TODO: Document this.
+      ## A type that allows a string value joined by new lines.
+      ##
+      ## @type Attrs
       lines = lib.types.strings.concat "\n";
     };
 
     attrs = {
-      # TODO: Document this.
+      ## A type that allows an attribute set containing any type of value. The merged
+      ## definitions must all be.
+      ##
+      ## @type Attrs
       any = lib.types.create {
         name = "Attrs";
         description = "attribute set";
@@ -378,7 +462,9 @@ lib: {
           definitions;
       };
 
-      # TODO: Document this.
+      ## Create a type that allows an attribute set containing a specific type of value.
+      ##
+      ## @type Attrs -> Attrs
       of = type:
         lib.types.create {
           name = "AttrsOf";
@@ -411,7 +497,11 @@ lib: {
           };
         };
 
-      # TODO: Document this.
+      ## Create a type that allows an attribute set containing a specific type of value.
+      ## However, unlike `lib.types.attrs.of` this variant is lazily evaluated and does
+      ## not support certain properties like `lib.modules.when`.
+      ##
+      ## @type Attrs -> Attrs
       lazy = type:
         lib.types.create {
           name = "LazyAttrsOf";
@@ -443,7 +533,9 @@ lib: {
         };
     };
 
-    # TODO: Document this.
+    ## A type that allows a package (derivation or store path).
+    ##
+    ## @type Attrs
     package = lib.types.create {
       name = "Package";
       description = "package";
@@ -457,7 +549,10 @@ lib: {
     };
 
     packages = {
-      # TODO: Document this.
+      ## A type that allows a shell package. This is a package with an accompanying
+      ## `shellPath` attribute.
+      ##
+      ## @type Attrs
       shell =
         lib.types.package
         // {
@@ -465,7 +560,9 @@ lib: {
         };
     };
 
-    # TODO: Document this.
+    ## A type that allows a path value. The merged definitions must all be the same.
+    ##
+    ## @type Attrs
     path = lib.types.create {
       name = "Path";
       description = "path";
@@ -476,10 +573,14 @@ lib: {
     };
 
     list = {
-      # TODO: Document this.
+      ## A type that allows a list containing any value.
+      ##
+      ## @type Attrs
       any = lib.types.list.of lib.types.any;
 
-      # TODO: Document this.
+      ## Create a type that allows a list containing a specific type of value.
+      ##
+      ## @type Attrs -> Attrs
       of = type:
         lib.types.create {
           name = "ListOf";
@@ -522,7 +623,9 @@ lib: {
           };
         };
 
-      # TODO: Document this.
+      ## A type that allows a non-empty list containing a specific type of value.
+      ##
+      ## @type Attrs -> Attrs
       required = type:
         lib.types.withCheck
         (lib.types.list.of type)
@@ -533,7 +636,9 @@ lib: {
         };
     };
 
-    # TODO: Document this.
+    ## Create a type that must be a unique value.
+    ##
+    ## @type String -> Attrs -> Attrs
     unique = message: type:
       lib.types.create {
         name = "Unique";
@@ -550,8 +655,10 @@ lib: {
         };
       };
 
-    # TODO: Document this.
-    # Like unique, but does not merge.
+    ## Create a type that must be a single value. Unlike `lib.types.unique`, this type
+    ## does not merge the definitions.
+    ##
+    ## @type Attrs -> Attrs
     single = type:
       lib.types.create {
         name = "Single";
@@ -568,7 +675,9 @@ lib: {
         };
       };
 
-    # TODO: Document this.
+    ## Create a type that may be either a given type or null.
+    ##
+    ## @type Attrs -> Attrs
     nullish = type:
       lib.types.create {
         name = "Nullish";
@@ -595,7 +704,9 @@ lib: {
         };
       };
 
-    # TODO: Document this.
+    ## Create a type that allows a function which returns a given type.
+    ##
+    ## @type Attrs -> Attrs
     function = type:
       lib.types.create {
         name = "Function";
@@ -619,14 +730,20 @@ lib: {
         };
       };
 
-    # TODO: Document this.
+    ## Create a submodule from a list of modules (or a module directly).
+    ##
+    ## @type (Module | (List Module)) -> Attrs
     submodule = modules:
       lib.types.submodules.of {
         modules = lib.lists.from.any modules;
       };
 
     submodules = {
-      # TODO: Document this.
+      ## Create a type from a list of submodules. This is particularly useful for use
+      ## with helpers like `lib.types.attrs.of` in order to produce more complex,
+      ## dynamic types.
+      ##
+      ## @type { modules :: List Module, args? :: Attrs, description? :: String | Null } -> Attrs
       of = settings @ {
         modules,
         args ? {},
@@ -719,12 +836,17 @@ lib: {
     };
 
     deferred = {
-      # TODO: Document this.
+      ## A module that is imported in another part of the configuration.
+      ##
+      ## @type Attrs
       default = lib.types.deferred.of {
         modules = [];
       };
 
-      # TODO: Document this.
+      ## Create a submodule type from a list of modules which will be imported in
+      ## another part of the configuration.
+      ##
+      ## @type { modules :: List Module } -> Attrs
       of = settings @ {modules}: let
         submodule = lib.types.submodule modules;
       in
@@ -760,7 +882,9 @@ lib: {
         };
     };
 
-    # TODO: Document this.
+    ## Create a type that allows an Option.
+    ##
+    ## @type Attrs
     option = lib.types.create {
       name = "Option";
       description = "option";
@@ -782,7 +906,9 @@ lib: {
         else merged.type;
     };
 
-    # TODO: Document this.
+    ## Create a type that allows a specific primitive value from a given list.
+    ##
+    ## @type List Any -> Attrs
     enum = values: let
       serialize = value:
         if builtins.isString value
@@ -811,7 +937,9 @@ lib: {
           };
       };
 
-    # TODO: Document this.
+    ## Create a type that allows either of two types.
+    ##
+    ## @type Attrs -> Attrs -> Attrs
     either = left: right: let
       name = "Either";
       functor =
@@ -846,7 +974,9 @@ lib: {
         };
       };
 
-    # TODO: Document this.
+    ## Create a type that allows a value of one of the given types.
+    ##
+    ## @type List Attrs -> Attrs
     one = types: let
       first = builtins.elemAt types 0;
       rest = lib.lists.tail types;
@@ -855,7 +985,10 @@ lib: {
       then builtins.throw "lib.types.one must be given at least one type"
       else builtins.foldl' lib.types.either first rest;
 
-    # TODO: Document this.
+    ## Create a type that allows a value which is either the final type or is transformable
+    ## to the final type.
+    ##
+    ## @type Attrs -> (Any -> Any) -> Attrs -> Attrs
     coerce = initial: transform: final: let
     in
       if initial.getSubModules != null

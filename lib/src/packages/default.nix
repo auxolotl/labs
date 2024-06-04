@@ -1,9 +1,15 @@
 lib: {
   packages = {
-    # TODO: Document this.
+    ## Check whether a value is a derivation. Note that this will also return true
+    ## for "fake" derivations which are constructed by helpers such as
+    ## `lib.paths.into.drv` for convenience.
+    ##
+    ## @type a -> Bool
     isDerivation = value: value.type or null == "derivation";
 
-    # TODO: Document this.
+    ## Sanitize a string to produce a valid name for a derivation.
+    ##
+    ## @type String -> String
     sanitizeDerivationName = let
       validate = builtins.match "[[:alnum:]+_?=-][[:alnum:]+._?=-]*";
     in
