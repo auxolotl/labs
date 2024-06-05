@@ -70,7 +70,6 @@ in {
         '';
 
         extras = {
-          #
           guileModule = "${cfg.package}/share/${pname}-${version}/module";
         };
       };
