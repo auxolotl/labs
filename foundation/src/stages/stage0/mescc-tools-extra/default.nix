@@ -16,6 +16,8 @@
 
   system = config.aux.system;
   builders = config.aux.foundation.builders;
+  sources = config.aux.foundation.stages.stage0.sources;
+  architecture = config.aux.foundation.stages.stage0.architecture;
 in {
   options.aux.foundation.stages.stage0.mescc-tools-extra = {
     package = lib.options.create {
@@ -68,10 +70,10 @@ in {
           ./build.kaem
         ];
 
-        src = hex0.mescc-tools-extra.src;
+        src = sources.mescc-tools-extra;
 
         m2libcOS = "linux";
-        m2libcArch = hex0.m2libc.architecture;
+        m2libcArch = architecture.m2libc;
         mesccTools = mescc-tools.package;
       });
     };

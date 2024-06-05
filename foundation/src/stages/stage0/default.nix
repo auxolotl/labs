@@ -17,6 +17,9 @@
     else builtins.throw "Unsupported system for stage0: ${system}";
 in {
   includes = [
+    ./sources
+    ./architecture
+
     ./phases/phase00.nix
     ./phases/phase01.nix
     ./phases/phase02.nix

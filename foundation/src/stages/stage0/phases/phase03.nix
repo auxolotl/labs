@@ -9,6 +9,8 @@
 
   system = config.aux.system;
   builders = config.aux.foundation.builders;
+  sources = config.aux.foundation.stages.stage0.sources;
+  architecture = config.aux.foundation.stages.stage0.architecture;
 in {
   options.aux.foundation.stages.stage0.catm = {
     package = lib.options.create {
@@ -53,18 +55,18 @@ in {
         meta = cfg.meta;
 
         executable =
-          if hex0.architecture == "AArch64"
+          if architecture.base == "AArch64"
           then hex1.package
           else hex2-0.package;
 
         args =
-          if hex0.architecture == "AArch64"
+          if architecture.base == "AArch64"
           then [
-            "${hex0.src}/catm_${hex0.architecture}.hex1"
+            "${sources.base}/catm_${architecture.base}.hex1"
             (builtins.placeholder "out")
           ]
           else [
-            "${hex0.src}/catm_${hex0.architecture}.hex2"
+            "${sources.base}/catm_${architecture.base}.hex2"
             (builtins.placeholder "out")
           ];
       });

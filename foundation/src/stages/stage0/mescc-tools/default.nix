@@ -15,6 +15,8 @@
 
   system = config.aux.system;
   builders = config.aux.foundation.builders;
+  sources = config.aux.foundation.stages.stage0.sources;
+  architecture = config.aux.foundation.stages.stage0.architecture;
 
   bloodFlag =
     if config.aux.platform.bits == 64
@@ -35,13 +37,13 @@
 
   getExtraUtil = name: let
     script = builtins.toFile "build-${name}.kaem" ''
-        ''${M2} --architecture ${hex0.m2libc.architecture} \
+        ''${M2} --architecture ${architecture.m2libc} \
         -f ''${m2libc}/sys/types.h \
         -f ''${m2libc}/stddef.h \
-        -f ''${m2libc}/${hex0.m2libc.architecture}/linux/fcntl.c \
+        -f ''${m2libc}/${architecture.m2libc}/linux/fcntl.c \
         -f ''${m2libc}/fcntl.c \
-        -f ''${m2libc}/${hex0.m2libc.architecture}/linux/unistd.c \
-        -f ''${m2libc}/${hex0.m2libc.architecture}/linux/sys/stat.c \
+        -f ''${m2libc}/${architecture.m2libc}/linux/unistd.c \
+        -f ''${m2libc}/${architecture.m2libc}/linux/sys/stat.c \
         -f ''${m2libc}/stdlib.c \
         -f ''${m2libc}/stdio.h \
         -f ''${m2libc}/stdio.c \
@@ -53,17 +55,17 @@
 
       ''${blood-elf-0} ${endianFlag} ${bloodFlag} -f ${name}.M1 -o ${name}-footer.M1
 
-      ''${M1} --architecture ${hex0.m2libc.architecture} \
+      ''${M1} --architecture ${architecture.m2libc} \
         ${endianFlag} \
-        -f ''${m2libc}/${hex0.m2libc.architecture}/${hex0.m2libc.architecture}_defs.M1 \
-        -f ''${m2libc}/${hex0.m2libc.architecture}/libc-full.M1 \
+        -f ''${m2libc}/${architecture.m2libc}/${architecture.m2libc}_defs.M1 \
+        -f ''${m2libc}/${architecture.m2libc}/libc-full.M1 \
         -f ${name}.M1 \
         -f ${name}-footer.M1 \
         -o ${name}.hex2
 
-      ''${hex2} --architecture ${hex0.m2libc.architecture} \
+      ''${hex2} --architecture ${architecture.m2libc} \
         ${endianFlag} \
-        -f ''${m2libc}/${hex0.m2libc.architecture}/ELF-${hex0.m2libc.architecture}-debug.hex2 \
+        -f ''${m2libc}/${architecture.m2libc}/ELF-${architecture.m2libc}-debug.hex2 \
         -f ${name}.hex2 \
         --base-address ${baseAddress} \
         -o ''${out}
@@ -85,16 +87,18 @@
         script
       ];
 
-      src = hex0.src;
+      src = sources.base;
+
       M1 = M1.package;
       M2 = M2.package;
       blood-elf-0 = blood-elf.package;
       hex2 = hex2.package;
-      m2libc = hex0.m2libc.src;
-      m2planet = hex0.m2planet.src;
-      m2mesoplanet = hex0.m2mesoplanet.src;
-      mesccTools = hex0.mescc-tools.src;
-      mesccToolsExtra = hex0.mescc-tools-extra.src;
+
+      m2libc = sources.m2libc;
+      m2planet = sources.m2planet;
+      m2mesoplanet = sources.m2mesoplanet;
+      mesccTools = sources.mescc-tools;
+      mesccToolsExtra = sources.mescc-tools-extra;
 
       bloodFlag = bloodFlag;
       endianFlag = endianFlag;
@@ -157,12 +161,12 @@ in {
         blood-elf-0 = blood-elf.package;
         hex2 = hex2.package;
 
-        m2libc = hex0.m2libc.src;
-        m2libcArch = hex0.m2libc.architecture;
-        m2planet = hex0.m2planet.src;
-        m2mesoplanet = hex0.m2mesoplanet.src;
-        mesccTools = hex0.mescc-tools.src;
-        mesccToolsExtra = hex0.mescc-tools-extra.src;
+        m2libc = sources.m2libc;
+        m2libcArch = architecture.m2libc;
+        m2planet = sources.m2planet;
+        m2mesoplanet = sources.m2mesoplanet;
+        mesccTools = sources.mescc-tools;
+        mesccToolsExtra = sources.mescc-tools-extra;
 
         bloodFlag = bloodFlag;
         endianFlag = endianFlag;

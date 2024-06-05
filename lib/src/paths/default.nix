@@ -25,7 +25,7 @@ lib: {
       ##
       ## @type Path -> Bool
       store = value:
-        if lib.strings.stringifiable value
+        if lib.strings.validate.stringifiable value
         then
           builtins.substring 0 1 (builtins.toString value)
           == "/"

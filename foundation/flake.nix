@@ -19,8 +19,6 @@
       # "aarch64-darwin"
     ];
   in {
-    modules.aux = modules;
-
     packages = forEachSystem (
       system: let
         result = lib.modules.run {

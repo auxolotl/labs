@@ -8,6 +8,8 @@
 
   system = config.aux.system;
   builders = config.aux.foundation.builders;
+  sources = config.aux.foundation.stages.stage0.sources;
+  architecture = config.aux.foundation.stages.stage0.architecture;
 in {
   options.aux.foundation.stages.stage0.hex2-0 = {
     package = lib.options.create {
@@ -54,7 +56,7 @@ in {
         executable = hex1.package;
 
         args = [
-          "${hex0.src}/hex2_${hex0.architecture}.hex1"
+          "${sources.base}/hex2_${architecture.base}.hex1"
           (builtins.placeholder "out")
         ];
       });

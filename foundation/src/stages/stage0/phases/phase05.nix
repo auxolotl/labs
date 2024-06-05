@@ -10,6 +10,8 @@
 
   system = config.aux.system;
   builders = config.aux.foundation.builders;
+  sources = config.aux.foundation.stages.stage0.sources;
+  architecture = config.aux.foundation.stages.stage0.architecture;
 in {
   options.aux.foundation.stages.stage0.cc_arch = {
     package = lib.options.create {
@@ -65,7 +67,7 @@ in {
             executable = M0.package;
 
             args = [
-              "${hex0.src}/cc_${hex0.m2libc.architecture}.M1"
+              "${sources.base}/cc_${architecture.m2libc}.M1"
               (builtins.placeholder "out")
             ];
           };
@@ -79,7 +81,7 @@ in {
 
             args = [
               (builtins.placeholder "out")
-              "${hex0.m2libc.src}/${hex0.m2libc.architecture}/ELF-${hex0.m2libc.architecture}.hex2"
+              "${sources.m2libc}/${architecture.m2libc}/ELF-${architecture.m2libc}.hex2"
               cc_arch0_hex2-0
             ];
           };

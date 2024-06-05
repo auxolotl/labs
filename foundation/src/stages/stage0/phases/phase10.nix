@@ -15,6 +15,8 @@
 
   system = config.aux.system;
   builders = config.aux.foundation.builders;
+  sources = config.aux.foundation.stages.stage0.sources;
+  architecture = config.aux.foundation.stages.stage0.architecture;
 in {
   options.aux.foundation.stages.stage0.M1 = {
     package = lib.options.create {
@@ -71,33 +73,33 @@ in {
 
             args = [
               "--architecture"
-              hex0.m2libc.architecture
+              architecture.m2libc
               "-f"
-              "${hex0.m2libc.src}/sys/types.h"
+              "${sources.m2libc}/sys/types.h"
               "-f"
-              "${hex0.m2libc.src}/stddef.h"
+              "${sources.m2libc}/stddef.h"
               "-f"
-              "${hex0.m2libc.src}/${hex0.m2libc.architecture}/linux/unistd.c"
+              "${sources.m2libc}/${architecture.m2libc}/linux/unistd.c"
               "-f"
-              "${hex0.m2libc.src}/${hex0.m2libc.architecture}/linux/fcntl.c"
+              "${sources.m2libc}/${architecture.m2libc}/linux/fcntl.c"
               "-f"
-              "${hex0.m2libc.src}/fcntl.c"
+              "${sources.m2libc}/fcntl.c"
               "-f"
-              "${hex0.m2libc.src}/${hex0.m2libc.architecture}/linux/sys/stat.c"
+              "${sources.m2libc}/${architecture.m2libc}/linux/sys/stat.c"
               "-f"
-              "${hex0.m2libc.src}/string.c"
+              "${sources.m2libc}/string.c"
               "-f"
-              "${hex0.m2libc.src}/stdlib.c"
+              "${sources.m2libc}/stdlib.c"
               "-f"
-              "${hex0.m2libc.src}/stdio.h"
+              "${sources.m2libc}/stdio.h"
               "-f"
-              "${hex0.m2libc.src}/stdio.c"
+              "${sources.m2libc}/stdio.c"
               "-f"
-              "${hex0.m2libc.src}/bootstrappable.c"
+              "${sources.m2libc}/bootstrappable.c"
               "-f"
-              "${hex0.mescc-tools.src}/stringify.c"
+              "${sources.mescc-tools}/stringify.c"
               "-f"
-              "${hex0.mescc-tools.src}/M1-macro.c"
+              "${sources.mescc-tools}/M1-macro.c"
               "--debug"
               "-o"
               (builtins.placeholder "out")
@@ -135,16 +137,16 @@ in {
 
             args = [
               "--architecture"
-              hex0.m2libc.architecture
+              architecture.m2libc
               (
                 if config.aux.platform.endian == "little"
                 then "--little-endian"
                 else "--big-endian"
               )
               "-f"
-              "${hex0.m2libc.src}/${hex0.m2libc.architecture}/${hex0.m2libc.architecture}_defs.M1"
+              "${sources.m2libc}/${architecture.m2libc}/${architecture.m2libc}_defs.M1"
               "-f"
-              "${hex0.m2libc.src}/${hex0.m2libc.architecture}/libc-full.M1"
+              "${sources.m2libc}/${architecture.m2libc}/libc-full.M1"
               "-f"
               M1-macro_M1
               "-f"
@@ -155,7 +157,7 @@ in {
           };
         in [
           "--architecture"
-          hex0.m2libc.architecture
+          architecture.m2libc
           (
             if config.aux.platform.endian == "little"
             then "--little-endian"
@@ -172,7 +174,7 @@ in {
             else builtins.throw "Unsupported system: ${config.aux.system}"
           )
           "-f"
-          "${hex0.m2libc.src}/${hex0.m2libc.architecture}/ELF-${hex0.m2libc.architecture}-debug.hex2"
+          "${sources.m2libc}/${architecture.m2libc}/ELF-${architecture.m2libc}-debug.hex2"
           "-f"
           M1-macro_hex2
           "-o"

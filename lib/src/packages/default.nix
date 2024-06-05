@@ -5,7 +5,8 @@ lib: {
     ## `lib.paths.into.drv` for convenience.
     ##
     ## @type a -> Bool
-    isDerivation = value: value.type or null == "derivation";
+    isDerivation = value:
+      value.type or null == "derivation";
 
     ## Sanitize a string to produce a valid name for a derivation.
     ##

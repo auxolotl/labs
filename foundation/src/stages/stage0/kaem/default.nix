@@ -3,20 +3,13 @@
   config,
 }: let
   cfg = config.aux.foundation.stages.stage0.kaem;
-  hex0 = config.aux.foundation.stages.stage0.hex0;
-  catm = config.aux.foundation.stages.stage0.catm;
-  M0 = config.aux.foundation.stages.stage0.M0;
-  cc_arch = config.aux.foundation.stages.stage0.cc_arch;
-  M2 = config.aux.foundation.stages.stage0.M2;
-  blood-elf = config.aux.foundation.stages.stage0.blood-elf;
-  M1 = config.aux.foundation.stages.stage0.M1;
-  hex2 = config.aux.foundation.stages.stage0.hex2;
-  kaem-unwrapped = config.aux.foundation.stages.stage0.kaem-unwrapped;
-  mescc-tools = config.aux.foundation.stages.stage0.mescc-tools;
-  mescc-tools-extra = config.aux.foundation.stages.stage0.mescc-tools-extra;
 
   system = config.aux.system;
   builders = config.aux.foundation.builders;
+
+  kaem-unwrapped = config.aux.foundation.stages.stage0.kaem-unwrapped;
+  mescc-tools = config.aux.foundation.stages.stage0.mescc-tools;
+  mescc-tools-extra = config.aux.foundation.stages.stage0.mescc-tools-extra;
 in {
   options.aux.foundation.stages.stage0.kaem = {
     package = lib.options.create {

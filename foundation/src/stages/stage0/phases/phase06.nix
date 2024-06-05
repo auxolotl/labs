@@ -11,6 +11,8 @@
 
   system = config.aux.system;
   builders = config.aux.foundation.builders;
+  sources = config.aux.foundation.stages.stage0.sources;
+  architecture = config.aux.foundation.stages.stage0.architecture;
 in {
   options.aux.foundation.stages.stage0.M2 = {
     package = lib.options.create {
@@ -67,16 +69,16 @@ in {
 
             args = [
               (builtins.placeholder "out")
-              "${hex0.m2libc.src}/${hex0.m2libc.architecture}/linux/bootstrap.c"
-              "${hex0.m2planet.src}/cc.h"
-              "${hex0.m2libc.src}/bootstrappable.c"
-              "${hex0.m2planet.src}/cc_globals.c"
-              "${hex0.m2planet.src}/cc_reader.c"
-              "${hex0.m2planet.src}/cc_strings.c"
-              "${hex0.m2planet.src}/cc_types.c"
-              "${hex0.m2planet.src}/cc_core.c"
-              "${hex0.m2planet.src}/cc_macro.c"
-              "${hex0.m2planet.src}/cc.c"
+              "${sources.m2libc}/${architecture.m2libc}/linux/bootstrap.c"
+              "${sources.m2planet}/cc.h"
+              "${sources.m2libc}/bootstrappable.c"
+              "${sources.m2planet}/cc_globals.c"
+              "${sources.m2planet}/cc_reader.c"
+              "${sources.m2planet}/cc_strings.c"
+              "${sources.m2planet}/cc_types.c"
+              "${sources.m2planet}/cc_core.c"
+              "${sources.m2planet}/cc_macro.c"
+              "${sources.m2planet}/cc.c"
             ];
           };
           M2_M1 = builders.raw.build {
@@ -102,8 +104,8 @@ in {
 
             args = [
               (builtins.placeholder "out")
-              "${hex0.m2libc.src}/${hex0.m2libc.architecture}/${hex0.m2libc.architecture}_defs.M1"
-              "${hex0.m2libc.src}/${hex0.m2libc.architecture}/libc-core.M1"
+              "${sources.m2libc}/${architecture.m2libc}/${architecture.m2libc}_defs.M1"
+              "${sources.m2libc}/${architecture.m2libc}/libc-core.M1"
               M2_M1
             ];
           };
@@ -130,7 +132,7 @@ in {
 
             args = [
               (builtins.placeholder "out")
-              "${hex0.m2libc.src}/${hex0.m2libc.architecture}/ELF-${hex0.m2libc.architecture}.hex2"
+              "${sources.m2libc}/${architecture.m2libc}/ELF-${architecture.m2libc}.hex2"
               M2_hex2-0
             ];
           };
