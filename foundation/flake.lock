@@ -3,7 +3,7 @@
     "lib": {
       "locked": {
         "lastModified": 1,
-        "narHash": "sha256-wgO96O9ALMMXtfBKuh9rYo3KIVq4nk8V7Cke4dg0MOk=",
+        "narHash": "sha256-gJODnE6vuEI+ifNgmXywIpma4/uVfRayYknVQjDJN2c=",
         "path": "../lib",
         "type": "path"
       },

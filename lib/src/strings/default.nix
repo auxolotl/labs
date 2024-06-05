@@ -130,6 +130,15 @@ lib: {
         builtins.match "[ \t\n]*" value != null;
     };
 
+    ## Return a given string if a condition is true, otherwise return
+    ## an empty string.
+    ##
+    ## @type Bool -> String -> String
+    when = condition: value:
+      if condition
+      then value
+      else "";
+
     ## A table of ASCII characters mapped to their integer character code.
     ##
     ## @type Attrs

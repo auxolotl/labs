@@ -6,6 +6,7 @@ let
     exports = ./exports;
     platform = ./platform;
     stage0 = ./stages/stage0;
+    stage1 = ./stages/stage1;
     system = ./system;
   };
 in

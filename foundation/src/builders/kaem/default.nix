@@ -27,7 +27,7 @@ in {
       }: let
         package = builtins.derivation (
           (builtins.removeAttrs settings ["meta" "extras" "executable" "env" "deps" "script"])
-          env
+          // env
           // {
             inherit name system;
 

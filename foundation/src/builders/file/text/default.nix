@@ -3,6 +3,8 @@
   config,
 }: let
   system = config.aux.system;
+
+  stage0 = config.aux.foundation.stages.stage0;
 in {
   options.aux.foundation.builders.file.text = {
     build = lib.options.create {
@@ -22,6 +24,7 @@ in {
         extras ? {},
         ...
       }: let
+        source = builtins.toFile "source" contents;
         script =
           ''
             target=''${out}''${destination}
@@ -30,26 +33,28 @@ in {
             mkdir -p ''${out}''${destinationDir}
           ''
           + ''
-            cp ''${contentPath} ''${target}
+            cp ${source} ''${target}
           ''
           + lib.strings.when isExecutable ''
             chmod 555 ''${target}
           '';
         package = builtins.derivation (
-          (builtins.removeAttrs settings ["meta" "extras" "executable" "isExecutable"])
+          (builtins.removeAttrs settings ["meta" "extras" "contents" "executable" "isExecutable"])
           // {
-            inherit name system contents destination;
+            inherit name system destination;
             destinationDir = builtins.dirOf destination;
 
-            passAsFile = ["contents"];
-
-            builder = "${config.aux.foundation.stages.stage0.kaem.package}/bin/kaem";
+            builder = "${stage0.kaem.package}/bin/kaem";
 
             args = [
               "--verbose"
               "--strict"
               "--file"
               (builtins.toFile "write-text-to-file.kaem" script)
+            ];
+
+            PATH = lib.paths.bin [
+              stage0.mescc-tools-extra.package
             ];
           }
         );
