@@ -32,5 +32,37 @@ lib: {
           && builtins.dirOf (builtins.toString value) == builtins.storeDir
         else false;
     };
+
+    ## Create a search path from a list of paths.
+    ##
+    ## @type String -> [String] -> String
+    search = target: paths:
+      lib.strings.concatMapSep
+      ":"
+      (path: path + "/" + target)
+      (builtins.filter (value: value != null) paths);
+
+    ## Create a search path from a list of packages.
+    ##
+    ## @type String -> [Package] -> String
+    searchFromOutput = output: target: packages:
+      lib.paths.search
+      target
+      (builtins.map (lib.packages.getOutput output) packages);
+
+    ## Create a search path for the binary output of a package.
+    ##
+    ## @type [Package] -> String
+    bin = lib.paths.searchFromOutput "bin" "bin";
+
+    ## Create a search path for the library output of a package.
+    ##
+    ## @type [Package] -> String
+    lib = lib.paths.searchFromOutput "lib" "lib";
+
+    ## Create a search path for the include output of a package.
+    ##
+    ## @type [Package] -> String
+    include = lib.paths.searchFromOutput "dev" "include";
   };
 }

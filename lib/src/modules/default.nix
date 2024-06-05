@@ -474,8 +474,8 @@ lib: {
         prefix ? [],
       }:
         lib.modules.run {
-          modules = settings.modules ++ extensions.modules;
-          args = (settings.args or {}) // extensions.args;
+          modules = (settings.modules or []) ++ (extensions.modules or []);
+          args = (settings.args or {}) // (extensions.args or {});
           prefix = extensions.prefix or settings.prefix or [];
         };
 

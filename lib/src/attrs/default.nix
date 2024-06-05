@@ -144,5 +144,19 @@ lib: {
       valid = builtins.concatMap process names;
     in
       builtins.listToAttrs valid;
+
+    ## Generate an attribute set from a list of names and a function that is
+    ## applied to each name.
+    ##
+    ## @type (List String) -> (String -> Any) -> Attrs
+    generate = names: f: let
+      pairs =
+        builtins.map (name: {
+          inherit name;
+          value = f name;
+        })
+        names;
+    in
+      builtins.listToAttrs pairs;
   };
 }

@@ -1,5 +1,5 @@
 {
-  description = "A very basic flake";
+  description = "A NixPkgs library replacement containing helper functions and a module system.";
 
   outputs = _: {
     lib = import ./src;

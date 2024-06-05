@@ -44,5 +44,13 @@ lib: {
               else x)
           ]
           value;
+
+    ## Get an output of a package.
+    ##
+    ## @type String -> Package -> String
+    getOutput = output: package:
+      if ! package ? outputSpecified || !package.outputSpecified
+      then package.${output} or package.out or package
+      else package;
   };
 }

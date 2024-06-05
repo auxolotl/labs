@@ -6,6 +6,7 @@ let
     ./fp
     ./generators
     ./importers
+    ./licenses
     ./lists
     ./math
     ./modules
