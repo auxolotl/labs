@@ -199,7 +199,7 @@ in {
         libc-mini = createLib "libc-mini" sources.x86.linux.mescc.libc_mini;
         libmescc = createLib "libmescc" sources.x86.linux.mescc.libmescc;
         libc = createLib "libc" sources.x86.linux.mescc.libc;
-        libc_tcc = createLib "libc+tcc" (sources.x86.linux.mescc.libc_tcc ++ ["lib/linux/symlink.c"]);
+        libc_tcc = createLib "libc+tcc" sources.x86.linux.mescc.libc_tcc;
       in
         builders.kaem.build {
           name = "mes-m2-libs-${stage1.mes.version}";
