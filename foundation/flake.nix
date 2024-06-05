@@ -19,6 +19,14 @@
       # "aarch64-darwin"
     ];
   in {
+    extras = let
+      result = lib.modules.run {
+        modules =
+          builtins.attrValues modules;
+      };
+    in
+      result.config.exports.resolved.extras;
+
     packages = forEachSystem (
       system: let
         result = lib.modules.run {

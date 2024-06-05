@@ -45,7 +45,7 @@ in {
     };
 
     src = lib.options.create {
-      type = lib.types.string;
+      type = lib.types.package;
       description = "Source for the package.";
     };
   };
@@ -60,6 +60,7 @@ in {
       package = builders.kaem.build {
         name = "${pname}-${version}";
         meta = cfg.meta;
+        src = cfg.src;
 
         script = ''
           ungz --file ${cfg.src} --output nyacc.tar

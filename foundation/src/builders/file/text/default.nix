@@ -24,7 +24,6 @@ in {
         extras ? {},
         ...
       }: let
-        source = builtins.toFile "source" contents;
         script =
           ''
             target=''${out}''${destination}
@@ -33,16 +32,18 @@ in {
             mkdir -p ''${out}''${destinationDir}
           ''
           + ''
-            cp ${source} ''${target}
+            cp ''${contentsPath} ''${target}
           ''
           + lib.strings.when isExecutable ''
             chmod 555 ''${target}
           '';
         package = builtins.derivation (
-          (builtins.removeAttrs settings ["meta" "extras" "contents" "executable" "isExecutable"])
+          (builtins.removeAttrs settings ["meta" "extras" "executable" "isExecutable"])
           // {
-            inherit name system destination;
+            inherit name system destination contents;
             destinationDir = builtins.dirOf destination;
+
+            passAsFile = ["contents"];
 
             builder = "${stage0.kaem.package}/bin/kaem";
 

@@ -8,31 +8,40 @@
 
       type = lib.types.attrs.of lib.types.package;
     };
+
+    extras = lib.options.create {
+      default.value = {};
+      type = lib.types.attrs.any;
+    };
   };
 in {
   options = {
     exports = {
-      inherit (options) packages;
+      inherit (options) packages extras;
 
       resolved = {
-        inherit (options) packages;
+        inherit (options) packages extras;
       };
     };
   };
 
   config = {
-    exports.resolved =
-      builtins.mapAttrs (
-        name: value:
-          lib.attrs.filter
-          (
-            name: value:
-              if value ? meta && value.meta ? platforms
-              then builtins.elem config.aux.system value.meta.platforms
-              else true
-          )
-          value
-      )
-      (builtins.removeAttrs config.exports ["resolved"]);
+    exports.resolved = {
+      packages =
+        builtins.mapAttrs (
+          name: value:
+            lib.attrs.filter
+            (
+              name: value:
+                if value ? meta && value.meta ? platforms
+                then builtins.elem config.aux.system value.meta.platforms
+                else true
+            )
+            value
+        )
+        config.exports.packages;
+
+      extras = config.exports.extras;
+    };
   };
 }
