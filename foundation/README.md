@@ -21,7 +21,7 @@ let
         url = "https://github.com/auxolotl/labs/archive/main.tar.gz";
         sha256 = "<sha256>";
     };
-    lib = import "${labs}/foundation";
+    foundation = import "${labs}/foundation";
 in
     # ...
 ```
