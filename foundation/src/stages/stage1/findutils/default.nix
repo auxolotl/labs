@@ -2,21 +2,17 @@
   lib,
   config,
 }: let
-  cfg = config.aux.foundation.stages.stage1.gawk;
+  cfg = config.aux.foundation.stages.stage1.findutils;
 
   platform = config.aux.platform;
   builders = config.aux.foundation.builders;
 
   stage1 = config.aux.foundation.stages.stage1;
 in {
-  includes = [
-    ./boot.nix
-  ];
-
-  options.aux.foundation.stages.stage1.gawk = {
+  options.aux.foundation.stages.stage1.findutils = {
     package = lib.options.create {
       type = lib.types.package;
-      description = "The package to use for gawk.";
+      description = "The package to use for findutils.";
     };
 
     version = lib.options.create {
@@ -33,13 +29,13 @@ in {
       description = lib.options.create {
         type = lib.types.string;
         description = "Description for the package.";
-        default.value = "GNU implementation of the Awk programming language";
+        default.value = "GNU Find Utilities, the basic directory searching utilities of the GNU operating system";
       };
 
       homepage = lib.options.create {
         type = lib.types.string;
         description = "Homepage for the package.";
-        default.value = "https://www.gnu.org/software/gawk";
+        default.value = "https://www.gnu.org/software/findutils";
       };
 
       license = lib.options.create {
@@ -52,28 +48,22 @@ in {
       platforms = lib.options.create {
         type = lib.types.list.of lib.types.string;
         description = "Platforms the package supports.";
-        default.value = ["i686-linux"];
-      };
-
-      mainProgram = lib.options.create {
-        type = lib.types.string;
-        description = "The main program of the package.";
-        default.value = "awk";
+        default.value = ["x86_64-linux" "aarch64-linux" "i686-linux"];
       };
     };
   };
 
   config = {
-    aux.foundation.stages.stage1.gawk = {
-      version = "5.2.2";
+    aux.foundation.stages.stage1.findutils = {
+      version = "4.9.0";
 
       src = builtins.fetchurl {
-        url = "https://ftpmirror.gnu.org/gawk/gawk-${cfg.version}.tar.gz";
-        sha256 = "lFrvfM/xAfILIqEIArwAXplKsrjqPnJMwaGXxi9B9lA=";
+        url = "https://ftpmirror.gnu.org/findutils/findutils-${cfg.version}.tar.xz";
+        sha256 = "or+4wJ1DZ3DtxZ9Q+kg+eFsWGjt7nVR1c8sIBl/UYv4=";
       };
 
       package = builders.bash.boot.build {
-        name = "gawk-${cfg.version}";
+        name = "findutils-${cfg.version}";
 
         meta = cfg.meta;
 
@@ -83,14 +73,21 @@ in {
           stage1.gnused.package
           stage1.gnugrep.package
           stage1.gnutar.musl.package
-          stage1.gzip.package
-          stage1.gawk.boot.package
+          stage1.gawk.package
+          stage1.xz.package
         ];
 
         script = ''
           # Unpack
-          tar xzf ${cfg.src}
-          cd gawk-${cfg.version}
+          cp ${cfg.src} findutils.tar.xz
+          unxz findutils.tar.xz
+          tar xf findutils.tar
+          rm findutils.tar
+          cd findutils-${cfg.version}
+
+          # Patch
+          # configure fails to accurately detect PATH_MAX support
+          sed -i 's/chdir_long/chdir/' gl/lib/save-cwd.c
 
           # Configure
           export CC="tcc -B ${stage1.tinycc.musl.libs.package}/lib"
@@ -106,6 +103,7 @@ in {
 
           # Install
           make -j $NIX_BUILD_CORES install
+
         '';
       };
     };

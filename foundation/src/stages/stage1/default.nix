@@ -22,6 +22,10 @@ in {
     ./gzip
     ./musl
     ./gawk
+    ./xz
+    ./diffutils
+    ./binutils
+    ./findutils
   ];
 
   config = {
@@ -55,6 +59,11 @@ in {
         stage1-gnumake = stage1.gnumake.package;
         stage1-gnutar-musl = stage1.gnutar.musl.package;
         stage1-gawk = stage1.gawk.package;
+        stage1-xz = stage1.xz.package;
+        stage1-diffutils = stage1.diffutils.package;
+        stage1-coreutils = stage1.coreutils.package;
+        stage1-binutils = stage1.binutils.package;
+        stage1-findutils = stage1.findutils.package;
       };
 
       extras = {

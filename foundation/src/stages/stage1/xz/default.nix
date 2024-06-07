@@ -2,21 +2,17 @@
   lib,
   config,
 }: let
-  cfg = config.aux.foundation.stages.stage1.gawk;
+  cfg = config.aux.foundation.stages.stage1.xz;
 
   platform = config.aux.platform;
   builders = config.aux.foundation.builders;
 
   stage1 = config.aux.foundation.stages.stage1;
 in {
-  includes = [
-    ./boot.nix
-  ];
-
-  options.aux.foundation.stages.stage1.gawk = {
+  options.aux.foundation.stages.stage1.xz = {
     package = lib.options.create {
       type = lib.types.package;
-      description = "The package to use for gawk.";
+      description = "The package to use for xz.";
     };
 
     version = lib.options.create {
@@ -33,20 +29,23 @@ in {
       description = lib.options.create {
         type = lib.types.string;
         description = "Description for the package.";
-        default.value = "GNU implementation of the Awk programming language";
+        default.value = "A general-purpose data compression software, successor of LZMA";
       };
 
       homepage = lib.options.create {
         type = lib.types.string;
         description = "Homepage for the package.";
-        default.value = "https://www.gnu.org/software/gawk";
+        default.value = "https://tukaani.org/xz";
       };
 
       license = lib.options.create {
         # TODO: Add a proper type for licenses.
-        type = lib.types.attrs.any;
+        type = lib.types.list.of lib.types.attrs.any;
         description = "License for the package.";
-        default.value = lib.licenses.gpl3Plus;
+        default.value = [
+          lib.licenses.gpl2Plus
+          lib.licenses.lgpl21Plus
+        ];
       };
 
       platforms = lib.options.create {
@@ -54,26 +53,20 @@ in {
         description = "Platforms the package supports.";
         default.value = ["i686-linux"];
       };
-
-      mainProgram = lib.options.create {
-        type = lib.types.string;
-        description = "The main program of the package.";
-        default.value = "awk";
-      };
     };
   };
 
   config = {
-    aux.foundation.stages.stage1.gawk = {
-      version = "5.2.2";
+    aux.foundation.stages.stage1.xz = {
+      version = "5.4.3";
 
       src = builtins.fetchurl {
-        url = "https://ftpmirror.gnu.org/gawk/gawk-${cfg.version}.tar.gz";
-        sha256 = "lFrvfM/xAfILIqEIArwAXplKsrjqPnJMwaGXxi9B9lA=";
+        url = "https://tukaani.org/xz/xz-${cfg.version}.tar.gz";
+        sha256 = "HDguC8Lk4K9YOYqQPdYv/35RAXHS3keh6+BtFSjpt+k=";
       };
 
       package = builders.bash.boot.build {
-        name = "gawk-${cfg.version}";
+        name = "xz-${cfg.version}";
 
         meta = cfg.meta;
 
@@ -90,7 +83,7 @@ in {
         script = ''
           # Unpack
           tar xzf ${cfg.src}
-          cd gawk-${cfg.version}
+          cd xz-${cfg.version}
 
           # Configure
           export CC="tcc -B ${stage1.tinycc.musl.libs.package}/lib"
@@ -99,13 +92,16 @@ in {
           bash ./configure \
             --prefix=$out \
             --build=${platform.build} \
-            --host=${platform.host}
+            --host=${platform.host} \
+            --disable-shared \
+            --disable-assembler
 
           # Build
           make -j $NIX_BUILD_CORES
 
           # Install
           make -j $NIX_BUILD_CORES install
+
         '';
       };
     };
