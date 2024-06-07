@@ -2,22 +2,17 @@
   lib,
   config,
 }: let
-  cfg = config.aux.foundation.stages.stage1.gnutar;
+  cfg = config.aux.foundation.stages.stage1.bzip2;
 
   platform = config.aux.platform;
   builders = config.aux.foundation.builders;
 
   stage1 = config.aux.foundation.stages.stage1;
 in {
-  includes = [
-    ./boot.nix
-    ./musl.nix
-  ];
-
-  options.aux.foundation.stages.stage1.gnutar = {
+  options.aux.foundation.stages.stage1.bzip2 = {
     package = lib.options.create {
       type = lib.types.package;
-      description = "The package to use for gnutar.";
+      description = "The package to use for bzip2.";
     };
 
     version = lib.options.create {
@@ -34,79 +29,66 @@ in {
       description = lib.options.create {
         type = lib.types.string;
         description = "Description for the package.";
-        default.value = "GNU implementation of the `tar` archiver";
+        default.value = "High-quality data compression program";
       };
 
       homepage = lib.options.create {
         type = lib.types.string;
         description = "Homepage for the package.";
-        default.value = "https://www.gnu.org/software/tar";
+        default.value = "https://www.sourceware.org/bzip2";
       };
 
       license = lib.options.create {
         # TODO: Add a proper type for licenses.
         type = lib.types.attrs.any;
         description = "License for the package.";
-        default.value = lib.licenses.gpl3Plus;
+        default.value = lib.licenses.bsdOriginal;
       };
 
       platforms = lib.options.create {
         type = lib.types.list.of lib.types.string;
         description = "Platforms the package supports.";
-        default.value = ["x86_64-linux" "aarch64-linux" "i686-linux"];
-      };
-
-      mainProgram = lib.options.create {
-        type = lib.types.string;
-        description = "The main program of the package.";
-        default.value = "tar";
+        # TODO: Support more platforms.
+        default.value = ["i686-linux"];
       };
     };
   };
 
   config = {
-    aux.foundation.stages.stage1.gnutar = {
-      version = "1.35";
+    aux.foundation.stages.stage1.bzip2 = {
+      version = "1.0.8";
 
       src = builtins.fetchurl {
-        url = "https://ftpmirror.gnu.org/tar/tar-${cfg.version}.tar.gz";
-        sha256 = "FNVeMgY+qVJuBX+/Nfyr1TN452l4fv95GcN1WwLStX4=";
+        url = "https://sourceware.org/pub/bzip2/bzip2-${cfg.version}.tar.gz";
+        sha256 = "0s92986cv0p692icqlw1j42y9nld8zd83qwhzbqd61p1dqbh6nmb";
       };
 
-      package = builders.bash.boot.build {
-        name = "gnutar-${cfg.version}";
+      package = builders.bash.build {
+        name = "bzip2-${cfg.version}";
 
         meta = cfg.meta;
 
         deps.build.host = [
-          stage1.gcc.v46.cxx.package
-          stage1.musl.package
-          stage1.binutils.package
+          stage1.tinycc.musl.compiler.package
           stage1.gnumake.package
-          stage1.gnused.package
-          stage1.gnugrep.package
-          stage1.gawk.package
-          stage1.gzip.package
           stage1.gnutar.musl.package
+          stage1.gzip.package
         ];
 
         script = ''
           # Unpack
           tar xzf ${cfg.src}
-          cd tar-${cfg.version}
-
-          # Configure
-          bash ./configure \
-            --prefix=$out \
-            --build=${platform.build} \
-            --host=${platform.host} \
-            CC=musl-gcc
+          cd bzip2-${cfg.version}
 
           # Build
-          make -j $NIX_BUILD_CORES
+          make \
+            -j $NIX_BUILD_CORES \
+            CC="tcc -B ${stage1.tinycc.musl.libs.package}/lib" \
+            AR="tcc -ar" \
+            bzip2 bzip2recover
 
           # Install
-          make -j $NIX_BUILD_CORES install
+          make install -j $NIX_BUILD_CORES PREFIX=$out
 
         '';
       };

@@ -78,7 +78,7 @@ in {
           stage1.gnumake.package
           stage1.gnused.package
           stage1.gnugrep.package
-          stage1.gnutar.package
+          stage1.gnutar.musl.package
           stage1.gzip.package
         ];
 

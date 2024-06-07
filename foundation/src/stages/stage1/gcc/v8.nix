@@ -2,23 +2,17 @@
   lib,
   config,
 }: let
-  cfg = config.aux.foundation.stages.stage1.gcc;
+  cfg = config.aux.foundation.stages.stage1.gcc.v8;
 
   platform = config.aux.platform;
   builders = config.aux.foundation.builders;
 
   stage1 = config.aux.foundation.stages.stage1;
 in {
-  includes = [
-    ./v4.6.nix
-    ./v4.6.cxx.nix
-    ./v8.nix
-  ];
-
-  options.aux.foundation.stages.stage1.gcc = {
+  options.aux.foundation.stages.stage1.gcc.v8 = {
     package = lib.options.create {
       type = lib.types.package;
-      description = "The package to use for gcc-cxx.";
+      description = "The package to use for gcc.";
     };
 
     version = lib.options.create {
@@ -84,49 +78,23 @@ in {
         description = "Version of isl.";
       };
     };
-
-    meta = {
-      description = lib.options.create {
-        type = lib.types.string;
-        description = "Description for the package.";
-        default.value = "GNU Compiler Collection.";
-      };
-
-      homepage = lib.options.create {
-        type = lib.types.string;
-        description = "Homepage for the package.";
-        default.value = "https://gcc.gnu.org";
-      };
-
-      license = lib.options.create {
-        # TODO: Add a proper type for licenses.
-        type = lib.types.attrs.any;
-        description = "License for the package.";
-        default.value = lib.licenses.gpl3Plus;
-      };
-
-      platforms = lib.options.create {
-        type = lib.types.list.of lib.types.string;
-        description = "Platforms the package supports.";
-        default.value = ["i686-linux"];
-      };
-    };
   };
 
   config = {
-    aux.foundation.stages.stage1.gcc = {
-      version = "13.2.0";
+    aux.foundation.stages.stage1.gcc.v8 = {
+      version = "8.5.0";
 
       src = builtins.fetchurl {
         url = "https://ftpmirror.gnu.org/gcc/gcc-${cfg.version}/gcc-${cfg.version}.tar.xz";
-        sha256 = "4nXnZEKmBnNBon8Exca4PYYTFEAEwEE1KIY9xrXHQ9o=";
+        sha256 = "0wiEGlEbuDCmEAOXsAQtskzhH2Qtq26m7kSELlMl7VA=";
       };
 
       gmp = {
-        version = "6.3.0";
+        # last version to compile with gcc 4.6
+        version = "6.2.1";
         src = builtins.fetchurl {
           url = "https://ftpmirror.gnu.org/gmp/gmp-${cfg.gmp.version}.tar.xz";
-          sha256 = "o8K4AgG4nmhhb0rTC8Zq7kknw85Q4zkpyoGdXENTiJg=";
+          sha256 = "/UgpkSzd0S+EGBw0Ucx1K+IkZD6H+sSXtp7d2txJtPI=";
         };
       };
 
@@ -157,10 +125,10 @@ in {
       package = builders.bash.build {
         name = "gcc-${cfg.version}";
 
-        meta = cfg.meta;
+        meta = stage1.gcc.meta;
 
         deps.build.host = [
-          stage1.gcc.v8.package
+          stage1.gcc.v46.cxx.package
           stage1.binutils.package
           stage1.gnumake.package
           stage1.gnused.package
@@ -189,13 +157,15 @@ in {
           ln -s ../isl-${cfg.isl.version} isl
 
           # Patch
-          # force musl even if host triple is gnu
+          # doesn't recognise musl
           sed -i 's|"os/gnu-linux"|"os/generic"|' libstdc++-v3/configure.host
 
           # Configure
           export CC="gcc -Wl,-dynamic-linker -Wl,${stage1.musl.package}/lib/libc.so"
           export CXX="g++ -Wl,-dynamic-linker -Wl,${stage1.musl.package}/lib/libc.so"
           export CFLAGS_FOR_TARGET="-Wl,-dynamic-linker -Wl,${stage1.musl.package}/lib/libc.so"
+          export C_INCLUDE_PATH="${stage1.musl.package}/include"
+          export CPLUS_INCLUDE_PATH="$C_INCLUDE_PATH"
           export LIBRARY_PATH="${stage1.musl.package}/lib"
 
           bash ./configure \
@@ -206,6 +176,7 @@ in {
             --with-sysroot=${stage1.musl.package} \
             --enable-languages=c,c++ \
             --disable-bootstrap \
+            --disable-libmpx \
             --disable-libsanitizer \
             --disable-lto \
             --disable-multilib \
@@ -216,6 +187,7 @@ in {
 
           # Install
           make -j $NIX_BUILD_CORES install-strip
+
         '';
       };
     };

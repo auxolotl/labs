@@ -26,6 +26,7 @@ in {
     ./diffutils
     ./binutils
     ./findutils
+    ./bzip2
     ./gcc
   ];
 
@@ -70,7 +71,11 @@ in {
         # These packages are built using Bash v5
         stage1-gcc-46 = stage1.gcc.v46.package;
         stage1-musl = stage1.musl.package;
+        stage1-bzip2 = stage1.bzip2.package;
         stage1-gcc-46-cxx = stage1.gcc.v46.cxx.package;
+        stage1-gnutar = stage1.gnutar.package;
+        stage1-gcc-8 = stage1.gcc.v8.package;
+        stage1-gcc = stage1.gcc.package;
       };
 
       extras = {

@@ -90,7 +90,7 @@ in {
             stage1.gnupatch.package
             stage1.gnused.package
             stage1.gnugrep.package
-            stage1.gnutar.package
+            stage1.gnutar.musl.package
             stage1.gawk.boot.package
             stage1.gzip.package
             stage1.diffutils.package
