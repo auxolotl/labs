@@ -11,6 +11,7 @@ in {
   includes = [
     ./boot.nix
     ./mes.nix
+    ./musl.nix
   ];
 
   options.aux.foundation.stages.stage1.tinycc = {

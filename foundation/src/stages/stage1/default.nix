@@ -11,7 +11,7 @@ in {
     ./nyacc
     ./mes
     ./ln-boot
-    ./tinycc
+    ./tinycc # With the exception of `tinycc-musl` which uses Bash.
     ./gnupatch
     ./gnumake
     ./coreutils
@@ -47,6 +47,8 @@ in {
         stage1-gnutar-boot = stage1.gnutar.boot.package;
         stage1-gzip = stage1.gzip.package;
         stage1-musl-boot = stage1.musl.boot.package;
+        stage1-tinycc-musl = stage1.tinycc.musl.compiler.package;
+        stage1-tinycc-musl-libs = stage1.tinycc.musl.libs.package;
       };
 
       extras = {

@@ -120,7 +120,7 @@ in {
             # Configure
             bash ./configure \
               --prefix=$out \
-              --build=${(builtins.trace platform.build) platform.build} \
+              --build=${platform.build} \
               --host=${platform.host} \
               --disable-shared \
               CC=tcc

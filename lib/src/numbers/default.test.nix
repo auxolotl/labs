@@ -29,9 +29,7 @@ in {
         expected = "64";
         actual = lib.numbers.into.hex 100;
       in
-        (builtins.trace actual)
-        actual
-        == expected;
+        actual == expected;
     };
   };
 

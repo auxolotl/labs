@@ -8,7 +8,7 @@ args @ {
 
   stage1 = config.aux.foundation.stages.stage1;
 
-  pname = "tinycc-boot";
+  pname = "tinycc-mes";
 
   helpers = lib.fp.withDynamicArgs (import ./helpers.nix) args;
 in {
@@ -56,7 +56,7 @@ in {
         };
 
         tinycc-mes-boot = helpers.createTinyccMes {
-          pname = "tinycc-mes-boot";
+          pname = "${pname}-boot";
           version = stage1.tinycc.version;
           src = cfg.src;
           args = [
@@ -83,7 +83,7 @@ in {
         };
       in
         helpers.createTinyccMes {
-          pname = "tinycc-mes";
+          inherit pname;
           version = stage1.tinycc.version;
           src = cfg.src;
           args = [
