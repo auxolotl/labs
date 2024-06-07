@@ -10,6 +10,7 @@ in {
   includes = [
     ./compiler.nix
     ./libs.nix
+    ./libc.nix
   ];
 
   options.aux.foundation.stages.stage1.mes = {
