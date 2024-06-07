@@ -11,6 +11,8 @@ in {
     ./mes
     ./ln-boot
     ./tinycc
+    ./gnupatch
+    ./gnumake
   ];
 
   config = {
@@ -25,6 +27,8 @@ in {
         stage1-tinycc-boot-libs = stage1.tinycc.boot.libs.package;
         stage1-tinycc-mes = stage1.tinycc.mes.compiler.package;
         stage1-tinycc-mes-libs = stage1.tinycc.mes.libs.package;
+        stage1-gnupatch = stage1.gnupatch.package;
+        stage1-gnumake = stage1.gnumake.package;
       };
 
       extras = {
@@ -33,15 +37,6 @@ in {
             src = stage1.mes.src;
             libs = {
               prefix = stage1.mes.libs.prefix;
-            };
-          };
-          tinycc = {
-            boot = {
-              src = stage1.tinycc.boot.src;
-              tarball = builtins.fetchurl {
-                url = "https://gitlab.com/janneke/tinycc/-/archive/${stage1.tinycc.boot.revision}/tinycc-${stage1.tinycc.boot.revision}.tar.gz";
-                sha256 = "1a0cw9a62qc76qqn5sjmp3xrbbvsz2dxrw21lrnx9q0s74mwaxbq";
-              };
             };
           };
         };
