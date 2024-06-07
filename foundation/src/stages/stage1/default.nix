@@ -13,6 +13,8 @@ in {
     ./tinycc
     ./gnupatch
     ./gnumake
+    ./coreutils
+    ./bash
   ];
 
   config = {
@@ -29,6 +31,8 @@ in {
         stage1-tinycc-mes-libs = stage1.tinycc.mes.libs.package;
         stage1-gnupatch = stage1.gnupatch.package;
         stage1-gnumake = stage1.gnumake.package;
+        stage1-coreutils-boot = stage1.coreutils.boot.package;
+        stage1-bash-boot = stage1.bash.boot.package;
       };
 
       extras = {
