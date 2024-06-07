@@ -93,3 +93,9 @@ Each stage can be found in [`./src/stages`](./src/stages).
 This stage is responsible for starting with a single binary seed and producing the tools
 necessary to compile (simple) C code. This stage will then compile the original tools it
 used from C sources.
+
+#### Stage 1
+
+This stage is responsible for building up to a recent version of `gcc`. Along with the
+compiler, this stage provides things like `coreutils`, `binutils`, `gnumake`, and several
+other important tools.
