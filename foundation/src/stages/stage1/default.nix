@@ -26,6 +26,7 @@ in {
     ./diffutils
     ./binutils
     ./findutils
+    ./gcc
   ];
 
   config = {
@@ -64,6 +65,10 @@ in {
         stage1-coreutils = stage1.coreutils.package;
         stage1-binutils = stage1.binutils.package;
         stage1-findutils = stage1.findutils.package;
+        stage1-bash = stage1.bash.package;
+
+        # These packages are built using Bash v5
+        stage1-gcc-46 = stage1.gcc.v46.package;
       };
 
       extras = {
