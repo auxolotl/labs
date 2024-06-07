@@ -11,6 +11,7 @@
 in {
   includes = [
     ./v4.6.nix
+    ./v4.6.cxx.nix
   ];
 
   options.aux.foundation.stages.stage1.gcc = {

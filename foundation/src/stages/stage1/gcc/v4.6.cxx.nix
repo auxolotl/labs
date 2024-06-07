@@ -2,17 +2,17 @@
   lib,
   config,
 }: let
-  cfg = config.aux.foundation.stages.stage1.gcc.v46;
+  cfg = config.aux.foundation.stages.stage1.gcc.v46.cxx;
 
   platform = config.aux.platform;
   builders = config.aux.foundation.builders;
 
   stage1 = config.aux.foundation.stages.stage1;
 in {
-  options.aux.foundation.stages.stage1.gcc.v46 = {
+  options.aux.foundation.stages.stage1.gcc.v46.cxx = {
     package = lib.options.create {
       type = lib.types.package;
-      description = "The package to use for gcc.";
+      description = "The package to use for gcc-cxx.";
     };
 
     version = lib.options.create {
@@ -70,7 +70,7 @@ in {
   };
 
   config = {
-    aux.foundation.stages.stage1.gcc.v46 = {
+    aux.foundation.stages.stage1.gcc.v46.cxx = {
       version = "4.6.4";
 
       src = builtins.fetchurl {
@@ -119,12 +119,12 @@ in {
         ];
       in
         builders.bash.build {
-          name = "gcc-${cfg.version}";
+          name = "gcc-cxx-${cfg.version}";
 
           meta = stage1.gcc.meta;
 
           deps.build.host = [
-            stage1.tinycc.musl.compiler.package
+            stage1.gcc.v46.package
             stage1.binutils.package
             stage1.gnumake.package
             stage1.gnupatch.package
@@ -152,45 +152,28 @@ in {
 
             # Patch
             ${lib.strings.concatMapSep "\n" (file: "patch -Np1 -i ${file}") patches}
+            # doesn't recognise musl
+            sed -i 's|"os/gnu-linux"|"os/generic"|' libstdc++-v3/configure.host
 
             # Configure
-            export CC="tcc -B ${stage1.tinycc.musl.libs.package}/lib"
-            export C_INCLUDE_PATH="${stage1.tinycc.musl.libs.package}/include:$(pwd)/mpfr/src"
+            export CC="gcc -Wl,-dynamic-linker -Wl,${stage1.musl.package}/lib/libc.so"
+            export CFLAGS_FOR_TARGET="-Wl,-dynamic-linker -Wl,${stage1.musl.package}/lib/libc.so"
+            export C_INCLUDE_PATH="${stage1.musl.package}/include"
             export CPLUS_INCLUDE_PATH="$C_INCLUDE_PATH"
-
-            # Avoid "Link tests are not allowed after GCC_NO_EXECUTABLES"
-            export lt_cv_shlibpath_overrides_runpath=yes
-            export ac_cv_func_memcpy=yes
-            export ac_cv_func_strerror=yes
+            export LIBRARY_PATH="${stage1.musl.package}/lib"
 
             bash ./configure \
               --prefix=$out \
               --build=${platform.build} \
               --host=${platform.host} \
-              --with-native-system-header-dir=${stage1.tinycc.musl.libs.package}/include \
-              --with-build-sysroot=${stage1.tinycc.musl.libs.package}/include \
+              --with-native-system-header-dir=${stage1.musl.package}/include \
+              --with-build-sysroot=${stage1.musl.package} \
+              --enable-languages=c,c++ \
               --disable-bootstrap \
-              --disable-decimal-float \
-              --disable-libatomic \
-              --disable-libcilkrts \
-              --disable-libgomp \
-              --disable-libitm \
               --disable-libmudflap \
-              --disable-libquadmath \
-              --disable-libsanitizer \
-              --disable-libssp \
-              --disable-libvtv \
-              --disable-lto \
-              --disable-lto-plugin \
-              --disable-multilib \
-              --disable-plugin \
-              --disable-threads \
-              --enable-languages=c \
-              --enable-static \
-              --disable-shared \
-              --enable-threads=single \
               --disable-libstdcxx-pch \
-              --disable-build-with-cxx
+              --disable-lto \
+              --disable-multilib
 
             # Build
             make -j $NIX_BUILD_CORES

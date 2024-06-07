@@ -69,6 +69,8 @@ in {
 
         # These packages are built using Bash v5
         stage1-gcc-46 = stage1.gcc.v46.package;
+        stage1-musl = stage1.musl.package;
+        stage1-gcc-46-cxx = stage1.gcc.v46.cxx.package;
       };
 
       extras = {
