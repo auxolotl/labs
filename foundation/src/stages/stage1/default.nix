@@ -23,6 +23,7 @@ in {
     ./gnutar
     ./gzip
     ./musl
+    ./gawk
   ];
 
   config = {
@@ -49,6 +50,7 @@ in {
         stage1-musl-boot = stage1.musl.boot.package;
         stage1-tinycc-musl = stage1.tinycc.musl.compiler.package;
         stage1-tinycc-musl-libs = stage1.tinycc.musl.libs.package;
+        stage1-gawk-boot = stage1.gawk.boot.package;
       };
 
       extras = {
