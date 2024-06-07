@@ -48,7 +48,7 @@ in {
 
           deps.build.host = [
             stage1.tinycc.mes.compiler.package
-            stage1.gnumake.package
+            stage1.gnumake.boot.package
             stage1.gnused.boot.package
             stage1.gnugrep.package
             stage1.gnupatch.package

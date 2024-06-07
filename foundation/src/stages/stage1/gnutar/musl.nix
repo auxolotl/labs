@@ -2,22 +2,17 @@
   lib,
   config,
 }: let
-  cfg = config.aux.foundation.stages.stage1.gnutar;
+  cfg = config.aux.foundation.stages.stage1.gnutar.musl;
 
   platform = config.aux.platform;
   builders = config.aux.foundation.builders;
 
   stage1 = config.aux.foundation.stages.stage1;
 in {
-  includes = [
-    ./boot.nix
-    ./musl.nix
-  ];
-
-  options.aux.foundation.stages.stage1.gnutar = {
+  options.aux.foundation.stages.stage1.gnutar.musl = {
     package = lib.options.create {
       type = lib.types.package;
-      description = "The package to use for gnutar.";
+      description = "The package to use for gnutar-musl.";
     };
 
     version = lib.options.create {
@@ -29,43 +24,10 @@ in {
       type = lib.types.package;
       description = "Source for the package.";
     };
-
-    meta = {
-      description = lib.options.create {
-        type = lib.types.string;
-        description = "Description for the package.";
-        default.value = "GNU implementation of the `tar' archiver";
-      };
-
-      homepage = lib.options.create {
-        type = lib.types.string;
-        description = "Homepage for the package.";
-        default.value = "https://www.gnu.org/software/tar";
-      };
-
-      license = lib.options.create {
-        # TODO: Add a proper type for licenses.
-        type = lib.types.attrs.any;
-        description = "License for the package.";
-        default.value = lib.licenses.gpl3Plus;
-      };
-
-      platforms = lib.options.create {
-        type = lib.types.list.of lib.types.string;
-        description = "Platforms the package supports.";
-        default.value = ["x86_64-linux" "aarch64-linux" "i686-linux"];
-      };
-
-      mainProgram = lib.options.create {
-        type = lib.types.string;
-        description = "The main program of the package.";
-        default.value = "tar";
-      };
-    };
   };
 
   config = {
-    aux.foundation.stages.stage1.gnutar = {
+    aux.foundation.stages.stage1.gnutar.musl = {
       version = "1.12";
 
       src = builtins.fetchurl {
@@ -74,9 +36,9 @@ in {
       };
 
       package = builders.bash.boot.build {
-        name = "gnutar-${cfg.version}";
+        name = "gnutar-musl-${cfg.version}";
 
-        meta = cfg.meta;
+        meta = stage1.gnutar.meta;
 
         deps.build.host = [
           stage1.tinycc.musl.compiler.package

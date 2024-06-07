@@ -49,12 +49,6 @@ in {
         description = "Platforms the package supports.";
         default.value = ["x86_64-linux" "aarch64-linux" "i686-linux"];
       };
-
-      mainProgram = lib.options.create {
-        type = lib.types.string;
-        description = "The main program of the package.";
-        default.value = "grep";
-      };
     };
   };
 
@@ -75,7 +69,7 @@ in {
 
           deps.build.host = [
             stage1.tinycc.mes.compiler.package
-            stage1.gnumake.package
+            stage1.gnumake.boot.package
             stage1.gnused.boot.package
             stage1.gnugrep.package
           ];

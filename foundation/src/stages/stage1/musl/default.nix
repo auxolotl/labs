@@ -6,7 +6,7 @@
 
   builders = config.aux.foundation.builders;
 
-  stage1 = config.aux.foundation.stages.musl;
+  stage1 = config.aux.foundation.stages.stage1;
 in {
   includes = [
     ./boot.nix
