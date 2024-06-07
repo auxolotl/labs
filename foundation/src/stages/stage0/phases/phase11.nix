@@ -114,18 +114,19 @@ in {
 
             executable = blood-elf.package;
 
-            args = [
+            args =
               (lib.lists.when (config.aux.platform.bits == 64) "--64")
-              "-f"
-              hex2_linker_M1
-              (
-                if config.aux.platform.endian == "little"
-                then "--little-endian"
-                else "--big-endian"
-              )
-              "-o"
-              (builtins.placeholder "out")
-            ];
+              ++ [
+                "-f"
+                hex2_linker_M1
+                (
+                  if config.aux.platform.endian == "little"
+                  then "--little-endian"
+                  else "--big-endian"
+                )
+                "-o"
+                (builtins.placeholder "out")
+              ];
           };
           hex2_linker_hex2 = builders.raw.build {
             pname = "hex2_linker_hex2";

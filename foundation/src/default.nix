@@ -1,5 +1,6 @@
 let
   modules = {
+    builderBash = builders/bash;
     builderFileText = ./builders/file/text;
     builderKaem = ./builders/kaem;
     builderRaw = ./builders/raw;

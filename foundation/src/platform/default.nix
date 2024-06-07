@@ -287,6 +287,11 @@
   };
 in {
   options.aux.platform = {
+    name = lib.options.create {
+      type = lib.types.string;
+      description = "Name of the platform";
+    };
+
     family = lib.options.create {
       type = lib.types.string;
       description = "Family of the platform";
@@ -314,11 +319,31 @@ in {
       default.value = null;
       description = "Version of the platform";
     };
+
+    build = lib.options.create {
+      type = lib.types.string;
+      description = "The build entry, such as x86-unknown-linux-gnu.";
+    };
+
+    host = lib.options.create {
+      type = lib.types.string;
+      description = "The host entry, such as x86-unknown-linux-gnu.";
+    };
   };
 
   config = {
     aux.platform =
-      platforms.${platform}
-      or (builtins.throw "Unsupported platform: ${system}");
+      (
+        platforms.${platform}
+        or (builtins.throw "Unsupported platform: ${system}")
+      )
+      // {
+        name = platform;
+
+        # These will only ever have `linux` as the target since we
+        # do not support darwin bootstrapping.
+        build = "${platform}-unknown-${target}-gnu";
+        host = "${platform}-unknown-${target}-gnu";
+      };
   };
 }

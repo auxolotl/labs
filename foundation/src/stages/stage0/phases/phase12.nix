@@ -116,18 +116,19 @@ in {
 
             executable = blood-elf.package;
 
-            args = [
+            args =
               (lib.lists.when (config.aux.platform.bits == 64) "--64")
-              "-f"
-              kaem_M1
-              (
-                if config.aux.platform.endian == "little"
-                then "--little-endian"
-                else "--big-endian"
-              )
-              "-o"
-              (builtins.placeholder "out")
-            ];
+              ++ [
+                "-f"
+                kaem_M1
+                (
+                  if config.aux.platform.endian == "little"
+                  then "--little-endian"
+                  else "--big-endian"
+                )
+                "-o"
+                (builtins.placeholder "out")
+              ];
           };
           kaem_hex2 = builders.raw.build {
             pname = "kaem_hex2";

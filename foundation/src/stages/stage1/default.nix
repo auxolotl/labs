@@ -7,6 +7,7 @@
   stage1 = config.aux.foundation.stages.stage1;
 in {
   includes = [
+    # These packages are built using Kaem.
     ./nyacc
     ./mes
     ./ln-boot
@@ -15,6 +16,13 @@ in {
     ./gnumake
     ./coreutils
     ./bash
+
+    # These packages are built using Bash v2.
+    ./gnused
+    ./gnugrep
+    ./gnutar
+    ./gzip
+    ./musl
   ];
 
   config = {
@@ -33,6 +41,12 @@ in {
         stage1-gnumake = stage1.gnumake.package;
         stage1-coreutils-boot = stage1.coreutils.boot.package;
         stage1-bash-boot = stage1.bash.boot.package;
+
+        stage1-gnused-boot = stage1.gnused.boot.package;
+        stage1-gnugrep = stage1.gnugrep.package;
+        stage1-gnutar-boot = stage1.gnutar.boot.package;
+        stage1-gzip = stage1.gzip.package;
+        stage1-musl-boot = stage1.musl.boot.package;
       };
 
       extras = {
