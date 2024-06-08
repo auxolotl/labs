@@ -14,6 +14,7 @@ in {
     ./gnupatch
     ./gnumake
     ./coreutils
+    ./heirloom
     ./bash
 
     ./gnused
@@ -51,6 +52,7 @@ in {
         stage1-gnupatch = stage1.gnupatch.package;
         stage1-gnumake-boot = stage1.gnumake.boot.package;
         stage1-coreutils-boot = stage1.coreutils.boot.package;
+        stage1-heirloom-devtools = stage1.heirloom.devtools.package;
         stage1-bash-boot = stage1.bash.boot.package;
 
         # These packages are built using Bash v2.
@@ -71,6 +73,7 @@ in {
         stage1-coreutils = stage1.coreutils.package;
         stage1-binutils = stage1.binutils.package;
         stage1-findutils = stage1.findutils.package;
+        stage1-heirloom = stage1.heirloom.package;
         stage1-bash = stage1.bash.package;
 
         # These packages are built using Bash v5
