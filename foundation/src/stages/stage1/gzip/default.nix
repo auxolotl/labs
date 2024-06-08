@@ -64,7 +64,7 @@ in {
       package = let
       in
         builders.bash.boot.build {
-          name = "gnused-boot-${cfg.version}";
+          name = "gzip-${cfg.version}";
           meta = cfg.meta;
 
           deps.build.host = [

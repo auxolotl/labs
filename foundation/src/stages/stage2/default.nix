@@ -13,6 +13,8 @@ in {
     ./diffutils
     ./findutils
     ./gawk
+    ./gnugrep
+    ./gnupatch
   ];
 
   config = {
@@ -26,6 +28,8 @@ in {
         stage2-diffutils = stage2.diffutils.package;
         stage2-findutils = stage2.findutils.package;
         stage2-gawk = stage2.gawk.package;
+        stage2-gnugrep = stage2.gnugrep.package;
+        stage2-gnupatch = stage2.gnupatch.package;
       };
     };
   };

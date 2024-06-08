@@ -2,13 +2,14 @@
   lib,
   config,
 }: let
-  cfg = config.aux.foundation.stages.stage1.gnugrep;
+  cfg = config.aux.foundation.stages.stage2.gnugrep;
 
+  platform = config.aux.platform;
   builders = config.aux.foundation.builders;
 
   stage1 = config.aux.foundation.stages.stage1;
 in {
-  options.aux.foundation.stages.stage1.gnugrep = {
+  options.aux.foundation.stages.stage2.gnugrep = {
     package = lib.options.create {
       type = lib.types.package;
       description = "The package to use for gnugrep.";
@@ -59,48 +60,54 @@ in {
   };
 
   config = {
-    aux.foundation.stages.stage1.gnugrep = {
-      version = "2.4";
+    aux.foundation.stages.stage2.gnugrep = {
+      version = "3.11";
 
       src = builtins.fetchurl {
-        url = "https://ftpmirror.gnu.org/grep/grep-${cfg.version}.tar.gz";
-        sha256 = "05iayw5sfclc476vpviz67hdy03na0pz2kb5csa50232nfx34853";
+        url = "https://ftpmirror.gnu.org/grep/grep-${cfg.version}.tar.xz";
+        sha256 = "HbKu3eidDepCsW2VKPiUyNFdrk4ZC1muzHj1qVEnbqs=";
       };
 
-      package = let
-        # Thanks to the live-bootstrap project!
-        # See https://github.com/fosslinux/live-bootstrap/blob/1bc4296091c51f53a5598050c8956d16e945b0f5/sysa/grep-2.4
-        makefile = builtins.fetchurl {
-          url = "https://github.com/fosslinux/live-bootstrap/raw/1bc4296091c51f53a5598050c8956d16e945b0f5/sysa/grep-2.4/mk/main.mk";
-          sha256 = "08an9ljlqry3p15w28hahm6swnd3jxizsd2188przvvsj093j91k";
-        };
-      in
-        builders.bash.boot.build {
-          name = "gnugrep-${cfg.version}";
-          meta = cfg.meta;
+      package = builders.bash.build {
+        name = "gnugrep-static-${cfg.version}";
+        meta = cfg.meta;
 
-          deps.build.host = [
-            stage1.tinycc.mes.compiler.package
-            stage1.gnumake.boot.package
-          ];
+        deps.build.host = [
+          stage1.gcc.package
+          stage1.musl.package
+          stage1.binutils.package
+          stage1.gnumake.package
+          stage1.gnused.package
+          stage1.gnugrep.package
+          stage1.gawk.package
+          stage1.diffutils.package
+          stage1.findutils.package
+          stage1.gnutar.package
+          stage1.xz.package
+        ];
 
-          script = ''
-            # Unpack
-            ungz --file ${cfg.src} --output grep.tar
-            untar --file grep.tar
-            rm grep.tar
-            cd grep-${cfg.version}
+        script = ''
+          # Unpack
+          tar xf ${cfg.src}
+          cd grep-${cfg.version}
 
-            # Configure
-            cp ${makefile} Makefile
+          # Configure
+          bash ./configure \
+            --prefix=$out \
+            --build=${platform.build} \
+            --host=${platform.host} \
+            CC=musl-gcc \
+            CFLAGS=-static
 
-            # Build
-            make CC="tcc -B ${stage1.tinycc.mes.libs.package}/lib"
+          # Build
+          make -j $NIX_BUILD_CORES
 
-            # Install
-            make install PREFIX=$out
-          '';
-        };
+          # Install
+          make -j $NIX_BUILD_CORES install
+          rm $out/bin/{egrep,fgrep}
+
+        '';
+      };
     };
   };
 }

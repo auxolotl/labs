@@ -18,7 +18,7 @@ in {
   options.aux.foundation.stages.stage1.gcc = {
     package = lib.options.create {
       type = lib.types.package;
-      description = "The package to use for gcc-cxx.";
+      description = "The package to use for gcc.";
     };
 
     version = lib.options.create {
