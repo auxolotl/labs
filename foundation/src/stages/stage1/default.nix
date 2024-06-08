@@ -28,6 +28,11 @@ in {
     ./findutils
     ./bzip2
     ./gcc
+    ./gnum4
+    ./bison
+    ./linux-headers
+    ./zlib
+    ./python
   ];
 
   config = {
@@ -76,6 +81,11 @@ in {
         stage1-gnutar = stage1.gnutar.package;
         stage1-gcc-8 = stage1.gcc.v8.package;
         stage1-gcc = stage1.gcc.package;
+        stage1-gnum4 = stage1.gnum4.package;
+        stage1-bison = stage1.bison.package;
+        stage1-linux-headers = stage1.linux-headers.package;
+        stage1-zlib = stage1.zlib.package;
+        stage1-python = stage1.python.package;
       };
 
       extras = {

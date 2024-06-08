@@ -19,6 +19,9 @@ in {
     ./gnused
     ./gnutar
     ./gzip
+    ./glibc
+    ./patchelf
+    ./busybox
   ];
 
   config = {
@@ -38,6 +41,9 @@ in {
         stage2-gnused = stage2.gnused.package;
         stage2-gnutar = stage2.gnutar.package;
         stage2-gzip = stage2.gzip.package;
+        stage2-glibc = stage2.glibc.package;
+        stage2-patchelf = stage2.patchelf.package;
+        stage2-busybox = stage2.busybox.package;
       };
     };
   };

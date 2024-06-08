@@ -204,7 +204,8 @@ in {
             --disable-lto \
             --disable-multilib \
             --disable-plugin \
-            CFLAGS=-static
+            CFLAGS=-static \
+            CXXFLAGS=-static
 
           # Build
           make -j $NIX_BUILD_CORES
