@@ -97,5 +97,11 @@ used from C sources.
 #### Stage 1
 
 This stage is responsible for building up to a recent version of `gcc`. Along with the
-compiler, this stage provides things like `coreutils`, `binutils`, `gnumake`, and several
+compiler, this stage provides things like `bash`, `coreutils`, `gnumake`, and several
 other important tools.
+
+#### Stage 2
+
+This stage refines the existing packages by building static binaries as well as the most recent
+versions of the tools. In addition, certain load-bearing packages such as `patchelf` and `glibc`
+are built.
