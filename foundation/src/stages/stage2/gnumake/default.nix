@@ -2,44 +2,31 @@
   lib,
   config,
 }: let
-  cfg = config.aux.foundation.stages.stage1.bash;
+  cfg = config.aux.foundation.stages.stage2.gnumake;
 
   platform = config.aux.platform;
   builders = config.aux.foundation.builders;
 
   stage1 = config.aux.foundation.stages.stage1;
+  stage2 = config.aux.foundation.stages.stage2;
 in {
-  includes = [
-    ./boot.nix
-  ];
-
-  options.aux.foundation.stages.stage1.bash = {
+  options.aux.foundation.stages.stage2.gnumake = {
     package = lib.options.create {
       type = lib.types.package;
-      description = "The package to use for bash.";
-    };
-
-    version = lib.options.create {
-      type = lib.types.string;
-      description = "Version of the package.";
-    };
-
-    src = lib.options.create {
-      type = lib.types.package;
-      description = "Source for the package.";
+      description = "The package to use for gnumake.";
     };
 
     meta = {
       description = lib.options.create {
         type = lib.types.string;
         description = "Description for the package.";
-        default.value = "GNU Bourne-Again Shell, the de facto standard shell on Linux";
+        default.value = "A tool to control the generation of non-source files from sources";
       };
 
       homepage = lib.options.create {
         type = lib.types.string;
         description = "Homepage for the package.";
-        default.value = "https://www.gnu.org/software/bash";
+        default.value = "https://www.gnu.org/software/make";
       };
 
       license = lib.options.create {
@@ -54,72 +41,80 @@ in {
         description = "Platforms the package supports.";
         default.value = ["x86_64-linux" "aarch64-linux" "i686-linux"];
       };
+    };
 
-      mainProgram = lib.options.create {
-        type = lib.types.string;
-        description = "The main program of the package.";
-        default.value = "bash";
-      };
+    version = lib.options.create {
+      type = lib.types.string;
+      description = "Version of the package.";
+    };
+
+    src = lib.options.create {
+      type = lib.types.package;
+      description = "Source for the package.";
     };
   };
 
   config = {
-    aux.foundation.stages.stage1.bash = {
-      version = "5.2.15";
+    aux.foundation.stages.stage2.gnumake = {
+      version = "4.4.1";
 
       src = builtins.fetchurl {
-        url = "https://ftpmirror.gnu.org/bash/bash-${cfg.version}.tar.gz";
-        sha256 = "132qng0jy600mv1fs95ylnlisx2wavkkgpb19c6kmz7lnmjhjwhk";
+        url = "https://ftpmirror.gnu.org/make/make-${cfg.version}.tar.gz";
+        sha256 = "3Rb7HWe/q3mnL16DkHNcSePo5wtJRaFasfgd23hlj7M=";
       };
 
       package = let
         patches = [
-          # flush output for generated code
-          ./patches/mksignames-flush.patch
+          # Replaces /bin/sh with sh, see patch file for reasoning
+          ./patches/0001-No-impure-bin-sh.patch
+          # Purity: don't look for library dependencies (of the form `-lfoo') in /lib
+          # and /usr/lib. It's a stupid feature anyway. Likewise, when searching for
+          # included Makefiles, don't look in /usr/include and friends.
+          ./patches/0002-remove-impure-dirs.patch
         ];
       in
         builders.bash.boot.build {
-          name = "bash-${cfg.version}";
+          name = "gnumake-static-${cfg.version}";
 
           meta = cfg.meta;
 
           deps.build.host = [
-            stage1.tinycc.musl.compiler.package
-            stage1.coreutils.package
+            stage1.gcc.package
+            stage1.musl.package
+            stage1.binutils.package
             stage1.gnumake.package
             stage1.gnupatch.package
             stage1.gnused.package
             stage1.gnugrep.package
-            stage1.gnutar.musl.package
-            stage1.gawk.boot.package
-            stage1.gzip.package
+            stage1.gawk.package
             stage1.diffutils.package
+            stage1.findutils.package
+            stage1.gnutar.package
+            stage1.gzip.package
           ];
 
           script = ''
             # Unpack
-            tar xzf ${cfg.src}
-            cd bash-${cfg.version}
+            tar xf ${cfg.src}
+            cd make-${cfg.version}
 
             # Patch
             ${lib.strings.concatMapSep "\n" (file: "patch -Np1 -i ${file}") patches}
 
             # Configure
-            export CC="tcc -B ${stage1.tinycc.musl.libs.package}/lib"
-            export AR="tcc -ar"
-            export LD=tcc
             bash ./configure \
               --prefix=$out \
               --build=${platform.build} \
               --host=${platform.host} \
-              --without-bash-malloc
+              CC=musl-gcc \
+              CFLAGS=-static
 
             # Build
-            make -j $NIX_BUILD_CORES SHELL=bash
+            make -j $NIX_BUILD_CORES
 
             # Install
             make -j $NIX_BUILD_CORES install
-            ln -s bash $out/bin/sh
+
           '';
         };
     };

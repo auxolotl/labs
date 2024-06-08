@@ -8,6 +8,7 @@ let
     platform = ./platform;
     stage0 = ./stages/stage0;
     stage1 = ./stages/stage1;
+    stage2 = ./stages/stage2;
     system = ./system;
   };
 in

@@ -2,21 +2,17 @@
   lib,
   config,
 }: let
-  cfg = config.aux.foundation.stages.stage1.bash;
+  cfg = config.aux.foundation.stages.stage2.coreutils;
 
   platform = config.aux.platform;
   builders = config.aux.foundation.builders;
 
   stage1 = config.aux.foundation.stages.stage1;
 in {
-  includes = [
-    ./boot.nix
-  ];
-
-  options.aux.foundation.stages.stage1.bash = {
+  options.aux.foundation.stages.stage2.coreutils = {
     package = lib.options.create {
       type = lib.types.package;
-      description = "The package to use for bash.";
+      description = "The package to use for coreutils-boot.";
     };
 
     version = lib.options.create {
@@ -33,13 +29,13 @@ in {
       description = lib.options.create {
         type = lib.types.string;
         description = "Description for the package.";
-        default.value = "GNU Bourne-Again Shell, the de facto standard shell on Linux";
+        default.value = "The GNU Core Utilities.";
       };
 
       homepage = lib.options.create {
         type = lib.types.string;
         description = "Homepage for the package.";
-        default.value = "https://www.gnu.org/software/bash";
+        default.value = "https://www.gnu.org/software/coreutils";
       };
 
       license = lib.options.create {
@@ -54,72 +50,62 @@ in {
         description = "Platforms the package supports.";
         default.value = ["x86_64-linux" "aarch64-linux" "i686-linux"];
       };
-
-      mainProgram = lib.options.create {
-        type = lib.types.string;
-        description = "The main program of the package.";
-        default.value = "bash";
-      };
     };
   };
 
   config = {
-    aux.foundation.stages.stage1.bash = {
-      version = "5.2.15";
+    aux.foundation.stages.stage2.coreutils = {
+      version = "9.4";
 
       src = builtins.fetchurl {
-        url = "https://ftpmirror.gnu.org/bash/bash-${cfg.version}.tar.gz";
-        sha256 = "132qng0jy600mv1fs95ylnlisx2wavkkgpb19c6kmz7lnmjhjwhk";
+        url = "https://ftpmirror.gnu.org/coreutils/coreutils-${cfg.version}.tar.gz";
+        sha256 = "X2ANkJOXOwr+JTk9m8GMRPIjJlf0yg2V6jHHAutmtzk=";
       };
 
       package = let
-        patches = [
-          # flush output for generated code
-          ./patches/mksignames-flush.patch
+        configureFlags = [
+          "--prefix=${builtins.placeholder "out"}"
+          "--build=${platform.build}"
+          "--host=${platform.host}"
+          # libstdbuf.so fails in static builds
+          "--enable-no-install-program=stdbuf"
+          "--enable-single-binary=symlinks"
+          "CC=musl-gcc"
+          "CFLAGS=-static"
         ];
       in
-        builders.bash.boot.build {
-          name = "bash-${cfg.version}";
+        builders.bash.build {
+          name = "coreutils-${cfg.version}";
 
           meta = cfg.meta;
 
           deps.build.host = [
-            stage1.tinycc.musl.compiler.package
-            stage1.coreutils.package
+            stage1.gcc.package
+            stage1.musl.package
+            stage1.binutils.package
             stage1.gnumake.package
-            stage1.gnupatch.package
             stage1.gnused.package
             stage1.gnugrep.package
+            stage1.gawk.package
             stage1.gnutar.musl.package
-            stage1.gawk.boot.package
             stage1.gzip.package
+            stage1.findutils.package
             stage1.diffutils.package
           ];
 
           script = ''
             # Unpack
             tar xzf ${cfg.src}
-            cd bash-${cfg.version}
-
-            # Patch
-            ${lib.strings.concatMapSep "\n" (file: "patch -Np1 -i ${file}") patches}
+            cd coreutils-${cfg.version}
 
             # Configure
-            export CC="tcc -B ${stage1.tinycc.musl.libs.package}/lib"
-            export AR="tcc -ar"
-            export LD=tcc
-            bash ./configure \
-              --prefix=$out \
-              --build=${platform.build} \
-              --host=${platform.host} \
-              --without-bash-malloc
+            bash ./configure ${builtins.concatStringsSep " " configureFlags}
 
             # Build
-            make -j $NIX_BUILD_CORES SHELL=bash
+            make -j $NIX_BUILD_CORES
 
             # Install
             make -j $NIX_BUILD_CORES install
-            ln -s bash $out/bin/sh
           '';
         };
     };

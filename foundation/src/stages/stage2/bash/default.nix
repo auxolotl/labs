@@ -2,18 +2,14 @@
   lib,
   config,
 }: let
-  cfg = config.aux.foundation.stages.stage1.bash;
+  cfg = config.aux.foundation.stages.stage2.bash;
 
   platform = config.aux.platform;
   builders = config.aux.foundation.builders;
 
   stage1 = config.aux.foundation.stages.stage1;
 in {
-  includes = [
-    ./boot.nix
-  ];
-
-  options.aux.foundation.stages.stage1.bash = {
+  options.aux.foundation.stages.stage2.bash = {
     package = lib.options.create {
       type = lib.types.package;
       description = "The package to use for bash.";
@@ -64,7 +60,7 @@ in {
   };
 
   config = {
-    aux.foundation.stages.stage1.bash = {
+    aux.foundation.stages.stage2.bash = {
       version = "5.2.15";
 
       src = builtins.fetchurl {
@@ -72,56 +68,50 @@ in {
         sha256 = "132qng0jy600mv1fs95ylnlisx2wavkkgpb19c6kmz7lnmjhjwhk";
       };
 
-      package = let
-        patches = [
-          # flush output for generated code
-          ./patches/mksignames-flush.patch
+      package = builders.bash.build {
+        name = "bash-static-${cfg.version}";
+
+        meta = cfg.meta;
+
+        deps.build.host = [
+          stage1.gcc.package
+          stage1.musl.package
+          stage1.binutils.package
+          stage1.gnumake.package
+          stage1.gnupatch.package
+          stage1.gnused.package
+          stage1.gnugrep.package
+          stage1.gnutar.package
+          stage1.gawk.package
+          stage1.gzip.package
+          stage1.diffutils.package
+          stage1.findutils.package
         ];
-      in
-        builders.bash.boot.build {
-          name = "bash-${cfg.version}";
 
-          meta = cfg.meta;
+        script = ''
+          # Unpack
+          tar xf ${cfg.src}
+          cd bash-${cfg.version}
 
-          deps.build.host = [
-            stage1.tinycc.musl.compiler.package
-            stage1.coreutils.package
-            stage1.gnumake.package
-            stage1.gnupatch.package
-            stage1.gnused.package
-            stage1.gnugrep.package
-            stage1.gnutar.musl.package
-            stage1.gawk.boot.package
-            stage1.gzip.package
-            stage1.diffutils.package
-          ];
+          # Configure
+          bash ./configure \
+            --prefix=$out \
+            --build=${platform.build} \
+            --host=${platform.host} \
+            --without-bash-malloc \
+            --enable-static-link \
+            bash_cv_func_strtoimax=y \
+            CC=musl-gcc
 
-          script = ''
-            # Unpack
-            tar xzf ${cfg.src}
-            cd bash-${cfg.version}
+          # Build
+          make -j $NIX_BUILD_CORES
 
-            # Patch
-            ${lib.strings.concatMapSep "\n" (file: "patch -Np1 -i ${file}") patches}
+          # Install
+          make -j $NIX_BUILD_CORES install-strip
+          rm $out/bin/bashbug
 
-            # Configure
-            export CC="tcc -B ${stage1.tinycc.musl.libs.package}/lib"
-            export AR="tcc -ar"
-            export LD=tcc
-            bash ./configure \
-              --prefix=$out \
-              --build=${platform.build} \
-              --host=${platform.host} \
-              --without-bash-malloc
-
-            # Build
-            make -j $NIX_BUILD_CORES SHELL=bash
-
-            # Install
-            make -j $NIX_BUILD_CORES install
-            ln -s bash $out/bin/sh
-          '';
-        };
+        '';
+      };
     };
   };
 }
