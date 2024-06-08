@@ -21,7 +21,10 @@ let
         url = "https://github.com/auxolotl/labs/archive/main.tar.gz";
         sha256 = "<sha256>";
     };
-    foundation = import "${labs}/foundation";
+    foundation = import "${labs}/foundation" {
+        # Specifying a system is optional. By default it will use the current system.
+        system = "i686-linux";
+    };
 in
     # ...
 ```
