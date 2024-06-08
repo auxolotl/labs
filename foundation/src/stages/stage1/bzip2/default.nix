@@ -10,21 +10,6 @@
   stage1 = config.aux.foundation.stages.stage1;
 in {
   options.aux.foundation.stages.stage1.bzip2 = {
-    package = lib.options.create {
-      type = lib.types.package;
-      description = "The package to use for bzip2.";
-    };
-
-    version = lib.options.create {
-      type = lib.types.string;
-      description = "Version of the package.";
-    };
-
-    src = lib.options.create {
-      type = lib.types.package;
-      description = "Source for the package.";
-    };
-
     meta = {
       description = lib.options.create {
         type = lib.types.string;
@@ -51,6 +36,21 @@ in {
         # TODO: Support more platforms.
         default.value = ["i686-linux"];
       };
+    };
+
+    package = lib.options.create {
+      type = lib.types.package;
+      description = "The package to use for bzip2.";
+    };
+
+    version = lib.options.create {
+      type = lib.types.string;
+      description = "Version of the package.";
+    };
+
+    src = lib.options.create {
+      type = lib.types.package;
+      description = "Source for the package.";
     };
   };
 

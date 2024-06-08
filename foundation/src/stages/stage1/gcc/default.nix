@@ -16,6 +16,33 @@ in {
   ];
 
   options.aux.foundation.stages.stage1.gcc = {
+    meta = {
+      description = lib.options.create {
+        type = lib.types.string;
+        description = "Description for the package.";
+        default.value = "GNU Compiler Collection.";
+      };
+
+      homepage = lib.options.create {
+        type = lib.types.string;
+        description = "Homepage for the package.";
+        default.value = "https://gcc.gnu.org";
+      };
+
+      license = lib.options.create {
+        # TODO: Add a proper type for licenses.
+        type = lib.types.attrs.any;
+        description = "License for the package.";
+        default.value = lib.licenses.gpl3Plus;
+      };
+
+      platforms = lib.options.create {
+        type = lib.types.list.of lib.types.string;
+        description = "Platforms the package supports.";
+        default.value = ["i686-linux"];
+      };
+    };
+
     package = lib.options.create {
       type = lib.types.package;
       description = "The package to use for gcc.";
@@ -82,33 +109,6 @@ in {
       version = lib.options.create {
         type = lib.types.string;
         description = "Version of isl.";
-      };
-    };
-
-    meta = {
-      description = lib.options.create {
-        type = lib.types.string;
-        description = "Description for the package.";
-        default.value = "GNU Compiler Collection.";
-      };
-
-      homepage = lib.options.create {
-        type = lib.types.string;
-        description = "Homepage for the package.";
-        default.value = "https://gcc.gnu.org";
-      };
-
-      license = lib.options.create {
-        # TODO: Add a proper type for licenses.
-        type = lib.types.attrs.any;
-        description = "License for the package.";
-        default.value = lib.licenses.gpl3Plus;
-      };
-
-      platforms = lib.options.create {
-        type = lib.types.list.of lib.types.string;
-        description = "Platforms the package supports.";
-        default.value = ["i686-linux"];
       };
     };
   };

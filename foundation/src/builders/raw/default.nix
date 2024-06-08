@@ -13,7 +13,7 @@ in {
 
   config = {
     aux.foundation.builders.raw = {
-      build = lib.modules.overrides.default (settings @ {
+      build = settings @ {
         pname,
         version,
         executable,
@@ -36,7 +36,7 @@ in {
         package
         // {
           inherit meta extras;
-        });
+        };
     };
   };
 }

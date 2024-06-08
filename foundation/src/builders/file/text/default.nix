@@ -15,7 +15,7 @@ in {
 
   config = {
     aux.foundation.builders.file.text = {
-      build = lib.modules.overrides.default (settings @ {
+      build = settings @ {
         name,
         contents,
         isExecutable ? false,
@@ -63,7 +63,7 @@ in {
         package
         // {
           inherit meta extras;
-        });
+        };
     };
   };
 }

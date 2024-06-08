@@ -38,7 +38,7 @@ in {
       platforms = lib.options.create {
         type = lib.types.list.of lib.types.string;
         description = "Platforms the package supports.";
-        default.value = ["x86_64-linux" "i686-linux"];
+        default.value = ["i686-linux"];
       };
     };
 

@@ -13,20 +13,6 @@ args @ {
   helpers = lib.fp.withDynamicArgs (import ./helpers.nix) args;
 in {
   options.aux.foundation.stages.stage1.tinycc.boot = {
-    compiler = {
-      package = lib.options.create {
-        type = lib.types.package;
-        description = "The package to use for the tinycc-boot compiler.";
-      };
-    };
-
-    libs = {
-      package = lib.options.create {
-        type = lib.types.package;
-        description = "The package to use for the tinycc-boot libs.";
-      };
-    };
-
     meta = {
       description = lib.options.create {
         type = lib.types.string;
@@ -51,6 +37,20 @@ in {
         type = lib.types.list.of lib.types.string;
         description = "Platforms the package supports.";
         default.value = ["x86_64-linux" "i686-linux"];
+      };
+    };
+
+    compiler = {
+      package = lib.options.create {
+        type = lib.types.package;
+        description = "The package to use for the tinycc-boot compiler.";
+      };
+    };
+
+    libs = {
+      package = lib.options.create {
+        type = lib.types.package;
+        description = "The package to use for the tinycc-boot libs.";
       };
     };
 

@@ -9,32 +9,17 @@
   stage1 = config.aux.foundation.stages.stage1;
 in {
   options.aux.foundation.stages.stage1.gzip = {
-    package = lib.options.create {
-      type = lib.types.package;
-      description = "The package to use for gnugrep.";
-    };
-
-    version = lib.options.create {
-      type = lib.types.string;
-      description = "Version of the package.";
-    };
-
-    src = lib.options.create {
-      type = lib.types.package;
-      description = "Source for the package.";
-    };
-
     meta = {
       description = lib.options.create {
         type = lib.types.string;
         description = "Description for the package.";
-        default.value = "GNU implementation of the Unix grep command";
+        default.value = "GNU zip compression program.";
       };
 
       homepage = lib.options.create {
         type = lib.types.string;
         description = "Homepage for the package.";
-        default.value = "https://www.gnu.org/software/grep";
+        default.value = "https://www.gnu.org/software/gzip";
       };
 
       license = lib.options.create {
@@ -47,8 +32,23 @@ in {
       platforms = lib.options.create {
         type = lib.types.list.of lib.types.string;
         description = "Platforms the package supports.";
-        default.value = ["x86_64-linux" "aarch64-linux" "i686-linux"];
+        default.value = ["i686-linux"];
       };
+    };
+
+    package = lib.options.create {
+      type = lib.types.package;
+      description = "The package to use for gzip.";
+    };
+
+    version = lib.options.create {
+      type = lib.types.string;
+      description = "Version of the package.";
+    };
+
+    src = lib.options.create {
+      type = lib.types.package;
+      description = "Source for the package.";
     };
   };
 

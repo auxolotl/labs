@@ -11,21 +11,6 @@
   stage2 = config.aux.foundation.stages.stage2;
 in {
   options.aux.foundation.stages.stage2.patchelf = {
-    package = lib.options.create {
-      type = lib.types.package;
-      description = "The package to use for patchelf.";
-    };
-
-    version = lib.options.create {
-      type = lib.types.string;
-      description = "Version of the package.";
-    };
-
-    src = lib.options.create {
-      type = lib.types.package;
-      description = "Source for the package.";
-    };
-
     meta = {
       description = lib.options.create {
         type = lib.types.string;
@@ -51,6 +36,21 @@ in {
         description = "Platforms the package supports.";
         default.value = ["i686-linux"];
       };
+    };
+
+    package = lib.options.create {
+      type = lib.types.package;
+      description = "The package to use for patchelf.";
+    };
+
+    version = lib.options.create {
+      type = lib.types.string;
+      description = "Version of the package.";
+    };
+
+    src = lib.options.create {
+      type = lib.types.package;
+      description = "Source for the package.";
     };
   };
 

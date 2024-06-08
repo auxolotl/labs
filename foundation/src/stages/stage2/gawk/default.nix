@@ -10,21 +10,6 @@
   stage1 = config.aux.foundation.stages.stage1;
 in {
   options.aux.foundation.stages.stage2.gawk = {
-    package = lib.options.create {
-      type = lib.types.package;
-      description = "The package to use for gawk.";
-    };
-
-    version = lib.options.create {
-      type = lib.types.string;
-      description = "Version of the package.";
-    };
-
-    src = lib.options.create {
-      type = lib.types.package;
-      description = "Source for the package.";
-    };
-
     meta = {
       description = lib.options.create {
         type = lib.types.string;
@@ -56,6 +41,21 @@ in {
         description = "The main program of the package.";
         default.value = "awk";
       };
+    };
+
+    package = lib.options.create {
+      type = lib.types.package;
+      description = "The package to use for gawk.";
+    };
+
+    version = lib.options.create {
+      type = lib.types.string;
+      description = "Version of the package.";
+    };
+
+    src = lib.options.create {
+      type = lib.types.package;
+      description = "Source for the package.";
     };
   };
 

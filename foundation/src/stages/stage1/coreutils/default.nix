@@ -14,21 +14,6 @@ in {
   ];
 
   options.aux.foundation.stages.stage1.coreutils = {
-    package = lib.options.create {
-      type = lib.types.package;
-      description = "The package to use for coreutils-boot.";
-    };
-
-    version = lib.options.create {
-      type = lib.types.string;
-      description = "Version of the package.";
-    };
-
-    src = lib.options.create {
-      type = lib.types.package;
-      description = "Source for the package.";
-    };
-
     meta = {
       description = lib.options.create {
         type = lib.types.string;
@@ -52,8 +37,23 @@ in {
       platforms = lib.options.create {
         type = lib.types.list.of lib.types.string;
         description = "Platforms the package supports.";
-        default.value = ["x86_64-linux" "aarch64-linux" "i686-linux"];
+        default.value = ["i686-linux"];
       };
+    };
+
+    package = lib.options.create {
+      type = lib.types.package;
+      description = "The package to use for coreutils.";
+    };
+
+    version = lib.options.create {
+      type = lib.types.string;
+      description = "Version of the package.";
+    };
+
+    src = lib.options.create {
+      type = lib.types.package;
+      description = "Source for the package.";
     };
   };
 

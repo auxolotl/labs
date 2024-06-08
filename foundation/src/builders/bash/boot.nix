@@ -17,7 +17,7 @@ in {
 
   config = {
     aux.foundation.builders.bash.boot = {
-      build = lib.modules.overrides.default (settings @ {
+      build = settings @ {
         name,
         script,
         meta ? {},
@@ -71,7 +71,7 @@ in {
         package
         // {
           inherit meta extras;
-        });
+        };
     };
   };
 }

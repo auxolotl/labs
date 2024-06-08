@@ -16,7 +16,7 @@ in {
 
   config = {
     aux.foundation.builders.kaem = {
-      build = lib.modules.overrides.default (settings @ {
+      build = settings @ {
         name,
         script,
         meta ? {},
@@ -59,7 +59,7 @@ in {
         package
         // {
           inherit meta extras;
-        });
+        };
     };
   };
 }

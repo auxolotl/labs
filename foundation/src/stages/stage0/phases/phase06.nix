@@ -15,11 +15,6 @@
   architecture = config.aux.foundation.stages.stage0.architecture;
 in {
   options.aux.foundation.stages.stage0.M2 = {
-    package = lib.options.create {
-      type = lib.types.package;
-      description = "The package to use for M2.";
-    };
-
     meta = {
       description = lib.options.create {
         type = lib.types.string;
@@ -43,8 +38,13 @@ in {
       platforms = lib.options.create {
         type = lib.types.list.of lib.types.string;
         description = "Platforms the package supports.";
-        default.value = ["x86_64-linux" "aarch64-linux" "i686-linux"];
+        default.value = ["i686-linux"];
       };
+    };
+
+    package = lib.options.create {
+      type = lib.types.package;
+      description = "The package to use for M2.";
     };
   };
 
