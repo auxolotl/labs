@@ -14,7 +14,7 @@ in {
   options.aux.foundation.builders.bash = {
     build = lib.options.create {
       type = lib.types.function lib.types.package;
-      description = "Builds a package using the kaem builder.";
+      description = "Builds a package using the bash builder.";
     };
   };
 
