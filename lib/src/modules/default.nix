@@ -594,6 +594,8 @@ lib: {
                 meta = {
                   inherit extend type;
                 };
+
+                lib = lib.modules.overrides.default lib;
               };
             };
           };
@@ -605,7 +607,7 @@ lib: {
           collect
           (args.path or "")
           (modules ++ [internal])
-          ({inherit lib options config;} // args);
+          ({inherit options config;} // args);
       in
         lib.modules.combine prefix (lib.lists.reverse collected);
 
