@@ -11,4 +11,4 @@
       ];
   };
 in
-  result.config.exports.resolved
+  result.config.exports.resolved.packages

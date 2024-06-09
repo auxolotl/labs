@@ -42,14 +42,14 @@ in {
 
     compiler = {
       package = lib.options.create {
-        type = lib.types.package;
+        type = lib.types.derivation;
         description = "The package to use for the tinycc-boot compiler.";
       };
     };
 
     libs = {
       package = lib.options.create {
-        type = lib.types.package;
+        type = lib.types.derivation;
         description = "The package to use for the tinycc-boot libs.";
       };
     };

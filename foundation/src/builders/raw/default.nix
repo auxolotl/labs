@@ -6,7 +6,7 @@
 in {
   options.aux.foundation.builders.raw = {
     build = lib.options.create {
-      type = lib.types.function lib.types.package;
+      type = lib.types.function lib.types.derivation;
       description = "Builds a package using the raw builder.";
     };
   };

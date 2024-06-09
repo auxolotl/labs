@@ -53,7 +53,7 @@ in {
     };
 
     package = lib.options.create {
-      type = lib.types.package;
+      type = lib.types.derivation;
       description = "The package to use for heirloom.";
     };
 
@@ -63,7 +63,7 @@ in {
     };
 
     src = lib.options.create {
-      type = lib.types.package;
+      type = lib.types.derivation;
       description = "Source for the package.";
     };
   };

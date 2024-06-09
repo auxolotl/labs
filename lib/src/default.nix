@@ -74,4 +74,4 @@ let
       builtins.foldl' merge {} libs
   );
 in
-  lib
+  lib.points.withExtend (lib.fp.const lib)

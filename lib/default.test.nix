@@ -4,6 +4,7 @@ let
   root = ./.;
 
   files = [
+    ./src/default.test.nix
     ./src/attrs/default.test.nix
     ./src/bools/default.test.nix
     ./src/errors/default.test.nix

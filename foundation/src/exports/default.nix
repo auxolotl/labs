@@ -6,7 +6,7 @@
     packages = lib.options.create {
       default.value = {};
 
-      type = lib.types.attrs.of lib.types.package;
+      type = lib.types.attrs.of lib.types.derivation;
     };
 
     extras = lib.options.create {

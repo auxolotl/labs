@@ -8,7 +8,7 @@
 in {
   options.aux.foundation.builders.file.text = {
     build = lib.options.create {
-      type = lib.types.function lib.types.package;
+      type = lib.types.function lib.types.derivation;
       description = "Builds a package using the text file builder.";
     };
   };

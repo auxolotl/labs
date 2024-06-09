@@ -11,7 +11,7 @@
 in {
   options.aux.foundation.stages.stage1.gnutar.boot = {
     package = lib.options.create {
-      type = lib.types.package;
+      type = lib.types.derivation;
       description = "The package to use for gnutar-boot.";
     };
 
@@ -21,7 +21,7 @@ in {
     };
 
     src = lib.options.create {
-      type = lib.types.package;
+      type = lib.types.derivation;
       description = "Source for the package.";
     };
   };

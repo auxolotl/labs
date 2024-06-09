@@ -38,7 +38,7 @@ in {
     };
 
     package = lib.options.create {
-      type = lib.types.package;
+      type = lib.types.derivation;
       description = "The package to use for gcc.";
     };
 
@@ -48,20 +48,20 @@ in {
     };
 
     src = lib.options.create {
-      type = lib.types.package;
+      type = lib.types.derivation;
       description = "Source for the package.";
     };
 
     cc = {
       src = lib.options.create {
-        type = lib.types.package;
+        type = lib.types.derivation;
         description = "The cc source for the package.";
       };
     };
 
     gmp = {
       src = lib.options.create {
-        type = lib.types.package;
+        type = lib.types.derivation;
         description = "The gmp source for the package.";
       };
 
@@ -73,7 +73,7 @@ in {
 
     mpfr = {
       src = lib.options.create {
-        type = lib.types.package;
+        type = lib.types.derivation;
         description = "The mpfr source for the package.";
       };
 
@@ -85,7 +85,7 @@ in {
 
     mpc = {
       src = lib.options.create {
-        type = lib.types.package;
+        type = lib.types.derivation;
         description = "The mpc source for the package.";
       };
 
@@ -97,7 +97,7 @@ in {
 
     isl = {
       src = lib.options.create {
-        type = lib.types.package;
+        type = lib.types.derivation;
         description = "The isl source for the package.";
       };
       version = lib.options.create {

@@ -44,7 +44,7 @@ lib: {
 
     ## Create a search path from a list of packages.
     ##
-    ## @type String -> [Package] -> String
+    ## @type String -> [Derivation] -> String
     searchFromOutput = output: target: packages:
       lib.paths.search
       target
@@ -52,17 +52,17 @@ lib: {
 
     ## Create a search path for the binary output of a package.
     ##
-    ## @type [Package] -> String
+    ## @type [Derivation] -> String
     bin = lib.paths.searchFromOutput "bin" "bin";
 
     ## Create a search path for the library output of a package.
     ##
-    ## @type [Package] -> String
+    ## @type [Derivation] -> String
     lib = lib.paths.searchFromOutput "lib" "lib";
 
     ## Create a search path for the include output of a package.
     ##
-    ## @type [Package] -> String
+    ## @type [Derivation] -> String
     include = lib.paths.searchFromOutput "dev" "include";
   };
 }

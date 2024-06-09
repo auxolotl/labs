@@ -533,12 +533,12 @@ lib: {
         };
     };
 
-    ## A type that allows a package (derivation or store path).
+    ## A type that allows a derivation (or store path).
     ##
     ## @type Attrs
-    package = lib.types.create {
-      name = "Package";
-      description = "package";
+    derivation = lib.types.create {
+      name = "Derivation";
+      description = "derivation";
       check = value: lib.packages.isDerivation value || lib.paths.validate.store value;
       merge = location: definitions: let
         merged = lib.options.merge.one location definitions;

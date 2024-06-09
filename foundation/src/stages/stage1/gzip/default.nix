@@ -37,7 +37,7 @@ in {
     };
 
     package = lib.options.create {
-      type = lib.types.package;
+      type = lib.types.derivation;
       description = "The package to use for gzip.";
     };
 
@@ -47,7 +47,7 @@ in {
     };
 
     src = lib.options.create {
-      type = lib.types.package;
+      type = lib.types.derivation;
       description = "Source for the package.";
     };
   };

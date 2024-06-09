@@ -46,7 +46,7 @@ in {
     };
 
     package = lib.options.create {
-      type = lib.types.package;
+      type = lib.types.derivation;
       description = "The package to use for hex0.";
     };
 
@@ -59,7 +59,7 @@ in {
     };
 
     executable = lib.options.create {
-      type = lib.types.package;
+      type = lib.types.derivation;
       description = "The derivation to use to build hex0.";
     };
   };

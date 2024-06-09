@@ -1,0 +1,5 @@
+{
+  includes = [
+    ./packages.nix
+  ];
+}

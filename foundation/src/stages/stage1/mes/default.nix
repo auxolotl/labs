@@ -15,7 +15,7 @@ in {
 
   options.aux.foundation.stages.stage1.mes = {
     src = lib.options.create {
-      type = lib.types.package;
+      type = lib.types.derivation;
       description = "Source for the package.";
     };
 

@@ -46,9 +46,9 @@ lib: {
           ]
           value;
 
-    ## Get an output of a package.
+    ## Get an output of a derivation.
     ##
-    ## @type String -> Package -> String
+    ## @type String -> Derivation -> String
     getOutput = output: package:
       if ! package ? outputSpecified || !package.outputSpecified
       then package.${output} or package.out or package
