@@ -68,7 +68,7 @@ in {
       version = "5.2.15";
 
       src = builtins.fetchurl {
-        url = "https://ftpmirror.gnu.org/bash/bash-${cfg.version}.tar.gz";
+        url = "${config.aux.mirrors.gnu}/bash/bash-${cfg.version}.tar.gz";
         sha256 = "132qng0jy600mv1fs95ylnlisx2wavkkgpb19c6kmz7lnmjhjwhk";
       };
 

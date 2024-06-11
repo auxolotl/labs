@@ -62,7 +62,7 @@ in {
       version = "4.4.1";
 
       src = builtins.fetchurl {
-        url = "https://ftpmirror.gnu.org/make/make-${cfg.version}.tar.gz";
+        url = "${config.aux.mirrors.gnu}/make/make-${cfg.version}.tar.gz";
         sha256 = "3Rb7HWe/q3mnL16DkHNcSePo5wtJRaFasfgd23hlj7M=";
       };
 

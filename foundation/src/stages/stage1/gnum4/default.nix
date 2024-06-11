@@ -58,7 +58,7 @@ in {
       version = "1.4.19";
 
       src = builtins.fetchurl {
-        url = "https://ftpmirror.gnu.org/m4/m4-${cfg.version}.tar.xz";
+        url = "${config.aux.mirrors.gnu}/m4/m4-${cfg.version}.tar.xz";
         sha256 = "Y67eXG0zttmxNRHNC+LKwEby5w/QoHqpVzoEqCeDr5Y=";
       };
 

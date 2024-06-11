@@ -1,22 +1,6 @@
 {
   "nodes": {
-    "lib": {
-      "locked": {
-        "lastModified": 1,
-        "narHash": "sha256-vaPypHCYtWP6e0APNsV3ttoW9D2PlL2WpMytd6LdOmk=",
-        "path": "../lib",
-        "type": "path"
-      },
-      "original": {
-        "path": "../lib",
-        "type": "path"
-      }
-    },
-    "root": {
-      "inputs": {
-        "lib": "lib"
-      }
-    }
+    "root": {}
   },
   "root": "root",
   "version": 7

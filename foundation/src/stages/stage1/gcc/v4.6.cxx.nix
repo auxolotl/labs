@@ -74,13 +74,13 @@ in {
       version = "4.6.4";
 
       src = builtins.fetchurl {
-        url = "https://ftpmirror.gnu.org/gcc/gcc-${cfg.version}/gcc-core-${cfg.version}.tar.gz";
+        url = "${config.aux.mirrors.gnu}/gcc/gcc-${cfg.version}/gcc-core-${cfg.version}.tar.gz";
         sha256 = "173kdb188qg79pcz073cj9967rs2vzanyjdjyxy9v0xb0p5sad75";
       };
 
       cc = {
         src = builtins.fetchurl {
-          url = "https://ftpmirror.gnu.org/gcc/gcc-${cfg.version}/gcc-g++-${cfg.version}.tar.gz";
+          url = "${config.aux.mirrors.gnu}/gcc/gcc-${cfg.version}/gcc-g++-${cfg.version}.tar.gz";
           sha256 = "1fqqk5zkmdg4vmqzdmip9i42q6b82i3f6yc0n86n9021cr7ms2k9";
         };
       };
@@ -89,7 +89,7 @@ in {
         version = "4.3.2";
 
         src = builtins.fetchurl {
-          url = "https://ftpmirror.gnu.org/gmp/gmp-${cfg.gmp.version}.tar.gz";
+          url = "${config.aux.mirrors.gnu}/gmp/gmp-${cfg.gmp.version}.tar.gz";
           sha256 = "15rwq54fi3s11izas6g985y9jklm3xprfsmym3v1g6xr84bavqvv";
         };
       };
@@ -98,7 +98,7 @@ in {
         version = "2.4.2";
 
         src = builtins.fetchurl {
-          url = "https://ftpmirror.gnu.org/mpfr/mpfr-${cfg.mpfr.version}.tar.gz";
+          url = "${config.aux.mirrors.gnu}/mpfr/mpfr-${cfg.mpfr.version}.tar.gz";
           sha256 = "0dxn4904dra50xa22hi047lj8kkpr41d6vb9sd4grca880c7wv94";
         };
       };
@@ -107,7 +107,7 @@ in {
         version = "1.0.3";
 
         src = builtins.fetchurl {
-          url = "https://ftpmirror.gnu.org/mpc/mpc-${cfg.mpc.version}.tar.gz";
+          url = "${config.aux.mirrors.gnu}/mpc/mpc-${cfg.mpc.version}.tar.gz";
           sha256 = "1hzci2zrrd7v3g1jk35qindq05hbl0bhjcyyisq9z209xb3fqzb1";
         };
       };

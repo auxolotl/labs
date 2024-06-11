@@ -58,7 +58,7 @@ in {
       version = "2.41";
 
       src = builtins.fetchurl {
-        url = "https://ftpmirror.gnu.org/binutils/binutils-${cfg.version}.tar.xz";
+        url = "${config.aux.mirrors.gnu}/binutils/binutils-${cfg.version}.tar.xz";
         sha256 = "rppXieI0WeWWBuZxRyPy0//DHAMXQZHvDQFb3wYAdFA=";
       };
 

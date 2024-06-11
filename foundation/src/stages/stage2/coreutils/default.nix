@@ -58,7 +58,7 @@ in {
       version = "9.4";
 
       src = builtins.fetchurl {
-        url = "https://ftpmirror.gnu.org/coreutils/coreutils-${cfg.version}.tar.gz";
+        url = "${config.aux.mirrors.gnu}/coreutils/coreutils-${cfg.version}.tar.gz";
         sha256 = "X2ANkJOXOwr+JTk9m8GMRPIjJlf0yg2V6jHHAutmtzk=";
       };
 

@@ -548,13 +548,13 @@ lib: {
         else merged;
     };
 
-    packages = {
-      ## A type that allows a shell package. This is a package with an accompanying
+    derivations = {
+      ## A type that allows a shell derivation. This is a derivation with an accompanying
       ## `shellPath` attribute.
       ##
       ## @type Attrs
       shell =
-        lib.types.package
+        lib.types.derivation
         // {
           check = value: lib.packages.isDerivation && builtins.hasAttr "shellPath" value;
         };
@@ -762,10 +762,10 @@ lib: {
           modules =
             [
               {
-                options.__module__.args.name = lib.options.create {
+                options.__module__.args.dynamic.name = lib.options.create {
                   type = lib.types.string;
                 };
-                config.__module__.args.name = lib.modules.overrides.default "<name>";
+                config.__module__.args.dynamic.name = lib.modules.overrides.default "<name>";
               }
             ]
             ++ modules;
@@ -785,7 +785,7 @@ lib: {
           merge = location: definitions: let
             result = base.extend {
               modules =
-                [{config.__module__.args.name = lib.lists.last location;}]
+                [{config.__module__.args.dynamic.name = lib.lists.last location;}]
                 ++ getModules definitions;
             };
           in
@@ -882,7 +882,17 @@ lib: {
         };
     };
 
-    ## Create a type that allows an Option.
+    ## A type that allows a Type.
+    ##
+    ## @type Attrs
+    type = lib.types.create {
+      name = "Type";
+      description = "type";
+      check = lib.types.is "type";
+      merge = lib.options.merge.one;
+    };
+
+    ## A type that allows an Option.
     ##
     ## @type Attrs
     option = lib.types.create {

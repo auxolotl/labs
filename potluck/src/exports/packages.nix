@@ -12,4 +12,8 @@ in {
       default.value = {};
     };
   };
+
+  config = {
+    exported.packages = {};
+  };
 }

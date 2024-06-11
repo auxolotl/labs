@@ -85,7 +85,7 @@ in {
       version = "8.5.0";
 
       src = builtins.fetchurl {
-        url = "https://ftpmirror.gnu.org/gcc/gcc-${cfg.version}/gcc-${cfg.version}.tar.xz";
+        url = "${config.aux.mirrors.gnu}/gcc/gcc-${cfg.version}/gcc-${cfg.version}.tar.xz";
         sha256 = "0wiEGlEbuDCmEAOXsAQtskzhH2Qtq26m7kSELlMl7VA=";
       };
 
@@ -93,7 +93,7 @@ in {
         # last version to compile with gcc 4.6
         version = "6.2.1";
         src = builtins.fetchurl {
-          url = "https://ftpmirror.gnu.org/gmp/gmp-${cfg.gmp.version}.tar.xz";
+          url = "${config.aux.mirrors.gnu}/gmp/gmp-${cfg.gmp.version}.tar.xz";
           sha256 = "/UgpkSzd0S+EGBw0Ucx1K+IkZD6H+sSXtp7d2txJtPI=";
         };
       };
@@ -101,7 +101,7 @@ in {
       mpfr = {
         version = "4.2.1";
         src = builtins.fetchurl {
-          url = "https://ftpmirror.gnu.org/mpfr/mpfr-${cfg.mpfr.version}.tar.xz";
+          url = "${config.aux.mirrors.gnu}/mpfr/mpfr-${cfg.mpfr.version}.tar.xz";
           sha256 = "J3gHNTpnJpeJlpRa8T5Sgp46vXqaW3+yeTiU4Y8fy7I=";
         };
       };
@@ -109,7 +109,7 @@ in {
       mpc = {
         version = "1.3.1";
         src = builtins.fetchurl {
-          url = "https://ftpmirror.gnu.org/mpc/mpc-${cfg.mpc.version}.tar.gz";
+          url = "${config.aux.mirrors.gnu}/mpc/mpc-${cfg.mpc.version}.tar.gz";
           sha256 = "q2QkkvXPiCt0qgy3MM1BCoHtzb7IlRg86TDnBsHHWbg=";
         };
       };

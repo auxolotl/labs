@@ -63,7 +63,7 @@ in {
       version = "2.4";
 
       src = builtins.fetchurl {
-        url = "https://ftpmirror.gnu.org/grep/grep-${cfg.version}.tar.gz";
+        url = "${config.aux.mirrors.gnu}/grep/grep-${cfg.version}.tar.gz";
         sha256 = "05iayw5sfclc476vpviz67hdy03na0pz2kb5csa50232nfx34853";
       };
 

@@ -58,7 +58,7 @@ in {
       version = "4.9.0";
 
       src = builtins.fetchurl {
-        url = "https://ftpmirror.gnu.org/findutils/findutils-${cfg.version}.tar.xz";
+        url = "${config.aux.mirrors.gnu}/findutils/findutils-${cfg.version}.tar.xz";
         sha256 = "or+4wJ1DZ3DtxZ9Q+kg+eFsWGjt7nVR1c8sIBl/UYv4=";
       };
 

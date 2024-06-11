@@ -58,7 +58,7 @@ in {
       version = "3.10";
 
       src = builtins.fetchurl {
-        url = "https://ftpmirror.gnu.org/diffutils/diffutils-${cfg.version}.tar.xz";
+        url = "${config.aux.mirrors.gnu}/diffutils/diffutils-${cfg.version}.tar.xz";
         sha256 = "kOXpPMck5OvhLt6A3xY0Bjx6hVaSaFkZv+YLVWyb0J4=";
       };
 

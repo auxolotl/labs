@@ -57,7 +57,7 @@ in {
       version = "2.5.9";
 
       src = builtins.fetchurl {
-        url = "https://ftpmirror.gnu.org/patch/patch-${cfg.version}.tar.gz";
+        url = "${config.aux.mirrors.gnu}/patch/patch-${cfg.version}.tar.gz";
         sha256 = "12nv7jx3gxfp50y11nxzlnmqqrpicjggw6pcsq0wyavkkm3cddgc";
       };
 

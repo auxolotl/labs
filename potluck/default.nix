@@ -6,21 +6,22 @@
 
   result = lib.modules.run {
     modules =
-      modules
+      (builtins.attrValues modules)
       ++ [
+        ./src/export.nix
         {
           __file__ = ./default.nix;
 
-          options.aux.packages.foundation = {
-            raw = lib.options.create {
+          options.packages.aux = {
+            foundation = lib.options.create {
               type = lib.types.attrs.of lib.types.package;
               internal = true;
               description = "The foundational packages used to construct the larger package set.";
             };
           };
 
-          config.aux.packages.foundation = {
-            raw = foundation;
+          config.packages.aux = {
+            foundation = foundation;
           };
         }
       ];

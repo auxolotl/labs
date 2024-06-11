@@ -1,0 +1,41 @@
+{
+  "nodes": {
+    "foundation": {
+      "inputs": {
+        "lib": [
+          "lib"
+        ]
+      },
+      "locked": {
+        "lastModified": 1,
+        "narHash": "sha256-CDfGWoJg+7i9z6quwh/WXuTkOhqKme73dUTvWCvJ8EA=",
+        "path": "../foundation",
+        "type": "path"
+      },
+      "original": {
+        "path": "../foundation",
+        "type": "path"
+      }
+    },
+    "lib": {
+      "locked": {
+        "lastModified": 1,
+        "narHash": "sha256-TtgysWL53BK3f3JrPFunjzJaXWaDG2RbuPMglCwATOY=",
+        "path": "../lib",
+        "type": "path"
+      },
+      "original": {
+        "path": "../lib",
+        "type": "path"
+      }
+    },
+    "root": {
+      "inputs": {
+        "foundation": "foundation",
+        "lib": "lib"
+      }
+    }
+  },
+  "root": "root",
+  "version": 7
+}

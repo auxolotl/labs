@@ -59,7 +59,7 @@ in {
       version = "2.38";
 
       src = builtins.fetchurl {
-        url = "https://ftpmirror.gnu.org/libc/glibc-${cfg.version}.tar.xz";
+        url = "${config.aux.mirrors.gnu}/libc/glibc-${cfg.version}.tar.xz";
         sha256 = "+4KZiZiyspllRnvBtp0VLpwwfSzzAcnq+0VVt3DvP9I=";
       };
 

@@ -58,7 +58,7 @@ in {
       version = "3.8.2";
 
       src = builtins.fetchurl {
-        url = "https://ftpmirror.gnu.org/bison/bison-${cfg.version}.tar.xz";
+        url = "${config.aux.mirrors.gnu}/bison/bison-${cfg.version}.tar.xz";
         sha256 = "m7oCFMz38QecXVkhAEUie89hlRmEDr+oDNOEnP9aW/I=";
       };
 

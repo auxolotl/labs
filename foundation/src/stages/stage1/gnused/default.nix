@@ -68,7 +68,7 @@ in {
       version = "4.2";
 
       src = builtins.fetchurl {
-        url = "https://ftpmirror.gnu.org/sed/sed-${cfg.version}.tar.gz";
+        url = "${config.aux.mirrors.gnu}/sed/sed-${cfg.version}.tar.gz";
         sha256 = "20XNY/0BDmUFN9ZdXfznaJplJ0UjZgbl5ceCk3Jn2YM=";
       };
 

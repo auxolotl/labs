@@ -4,6 +4,7 @@ let
     builderFileText = ./builders/file/text;
     builderKaem = ./builders/kaem;
     builderRaw = ./builders/raw;
+    mirrors = ./mirrors;
     exports = ./exports;
     platform = ./platform;
     stage0 = ./stages/stage0;

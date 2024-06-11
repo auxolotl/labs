@@ -201,7 +201,14 @@ lib: {
           name: value:
             builtins.addErrorContext
             "while evaluating the module argument `${name}` in `${key}`"
-            (args.${name} or args.config.__module__.args.dynamic.${name})
+            (
+              # The base case here is the set of static arguments supplied in the
+              # call to `lib.modules.run`.
+              args.${name}
+              # Then, any other arguments must be created dynamically from within
+              # the modules being evaluated.
+              or args.config.__module__.args.dynamic.${name}
+            )
         )
         (lib.fp.args module);
     in
@@ -577,7 +584,7 @@ lib: {
             };
 
             freeform = lib.options.create {
-              type = lib.types.nullish lib.types.option;
+              type = lib.types.nullish lib.types.type;
               default.value = null;
               internal = true;
               description = "If set, all options that don't have a declared type will be merged using this type.";
@@ -594,8 +601,6 @@ lib: {
                 meta = {
                   inherit extend type;
                 };
-
-                lib = lib.modules.overrides.default lib;
               };
             };
           };
@@ -607,7 +612,18 @@ lib: {
           collect
           (args.path or "")
           (modules ++ [internal])
-          ({inherit options config;} // args);
+          (
+            {
+              inherit options config;
+
+              # The library does not include `extend` out of the box to avoid infinite recursion
+              # in most cases. Instead, we supply an estensible version here for modules to consume.
+              # This is only something that affects internal use of `lib`, the properly exported
+              # `lib` is augmented with an `extend` method.
+              lib = lib.points.withExtend (lib.fp.const lib);
+            }
+            // args
+          );
       in
         lib.modules.combine prefix (lib.lists.reverse collected);
 

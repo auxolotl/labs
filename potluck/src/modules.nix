@@ -1,1 +1,4 @@
-[]
+{
+  exports = ./exports;
+  lib = ./lib;
+}

@@ -30,7 +30,7 @@ in {
       version = "0.25";
 
       src = builtins.fetchurl {
-        url = "https://ftpmirror.gnu.org/mes/mes-${cfg.version}.tar.gz";
+        url = "${config.aux.mirrors.gnu}/mes/mes-${cfg.version}.tar.gz";
         sha256 = "MlJQs1Z+2SA7pwFhyDWvAQeec+vtl7S1u3fKUAuCiUA=";
       };
     };

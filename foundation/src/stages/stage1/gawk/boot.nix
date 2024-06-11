@@ -31,7 +31,7 @@ in {
       version = "3.0.6";
 
       src = builtins.fetchurl {
-        url = "https://ftpmirror.gnu.org/gawk/gawk-${cfg.version}.tar.gz";
+        url = "${config.aux.mirrors.gnu}/gawk/gawk-${cfg.version}.tar.gz";
         sha256 = "1z4bibjm7ldvjwq3hmyifyb429rs2d9bdwkvs0r171vv1khpdwmb";
       };
 

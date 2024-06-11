@@ -57,7 +57,7 @@ in {
       version = "1.2.4";
 
       src = builtins.fetchurl {
-        url = "https://ftpmirror.gnu.org/gzip/gzip-${cfg.version}.tar.gz";
+        url = "${config.aux.mirrors.gnu}/gzip/gzip-${cfg.version}.tar.gz";
         sha256 = "0ryr5b00qz3xcdcv03qwjdfji8pasp0007ay3ppmk71wl8c1i90w";
       };
 

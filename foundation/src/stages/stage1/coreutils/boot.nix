@@ -30,7 +30,7 @@ in {
       version = "5.0";
 
       src = builtins.fetchurl {
-        url = "https://ftpmirror.gnu.org/coreutils/coreutils-${cfg.version}.tar.gz";
+        url = "${config.aux.mirrors.gnu}/coreutils/coreutils-${cfg.version}.tar.gz";
         sha256 = "10wq6k66i8adr4k08p0xmg87ff4ypiazvwzlmi7myib27xgffz62";
       };
 
