@@ -56,6 +56,8 @@ in {
             rm tar.tar
             cd tar-${cfg.version}
 
+            chmod 0755 missing mkinstalldirs install-sh
+
             # Configure
             export CC="tcc -B ${stage1.tinycc.mes.libs.package}/lib"
             bash ./configure \
