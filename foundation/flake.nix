@@ -3,38 +3,34 @@
 
   inputs = {
     lib = {
-      url = "path:../lib";
+      url = "git+file:../?dir=lib";
     };
   };
 
-  outputs = inputs: let
-    inherit (inputs.lib) lib;
+  outputs =
+    inputs:
+    let
+      inherit (inputs.lib) lib;
 
-    modules = import ./src;
+      modules = import ./src;
 
-    forEachSystem = lib.attrs.generate [
-      "i686-linux"
-    ];
-  in {
-    extras = let
-      result = lib.modules.run {
-        modules =
-          builtins.attrValues modules;
-      };
+      forEachSystem = lib.attrs.generate [ "i686-linux" ];
     in
-      result.config.exports.resolved.extras;
+    {
+      extras =
+        let
+          result = lib.modules.run { modules = builtins.attrValues modules; };
+        in
+        result.config.exports.resolved.extras;
 
-    packages = forEachSystem (
-      system: let
-        result = lib.modules.run {
-          modules =
-            (builtins.attrValues modules)
-            ++ [
-              {config.aux.system = system;}
-            ];
-        };
-      in
+      packages = forEachSystem (
+        system:
+        let
+          result = lib.modules.run {
+            modules = (builtins.attrValues modules) ++ [ { config.aux.system = system; } ];
+          };
+        in
         result.config.exports.resolved.packages
-    );
-  };
+      );
+    };
 }
