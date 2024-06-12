@@ -1,5 +1,8 @@
 # Aux Labs
 
+> **Warning**: This repository is no longer updated! For all future development
+> see [git.auxolotl.org/auxolotl/labs](https://git.auxolotl.org/auxolotl/labs).
+
 Welcome to Aux Labs! Complimentary beakers and companion
 cubes are available in the gift shop.
 
