@@ -27,4 +27,4 @@ may collaborate.
 | Name                           | Phase     | Description                                                                |
 | ------------------------------ | --------- | -------------------------------------------------------------------------- |
 | [Aux Lib](./lib)               | Iteration | A library of common functions used in the Aux ecosystem.                   |
-| [Aux Foundation](./foundation) | Idea      | Foundational packages which allow for bootstrapping a greater package set. |
+| [Aux Foundation](./foundation) | Iteration | Foundational packages which allow for bootstrapping a greater package set. |

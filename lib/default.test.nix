@@ -7,6 +7,7 @@ let
     ./src/default.test.nix
     ./src/attrs/default.test.nix
     ./src/bools/default.test.nix
+    ./src/dag/default.test.nix
     ./src/errors/default.test.nix
     ./src/fp/default.test.nix
     ./src/generators/default.test.nix

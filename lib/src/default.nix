@@ -2,6 +2,7 @@ let
   files = [
     ./attrs
     ./bools
+    ./dag
     ./errors
     ./fp
     ./generators

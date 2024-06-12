@@ -1036,4 +1036,71 @@ lib: {
           };
         };
   };
+
+  dag = {
+    ## Create a type that allows a DAG (Directed Acyclic Graph) of a given type.
+    ##
+    ## @type Attrs -> Attrs
+    of = type: let
+      resolved = lib.types.attrs.of (lib.types.dag.entry type);
+    in
+      lib.types.create {
+        name = "Dag";
+        description = "Dag of ${type.description}";
+        check = resolved.check;
+        merge = resolved.merge;
+        fallback = resolved.fallback;
+        getSubOptions = prefix: type.getSubOptions (prefix ++ ["<name>"]);
+        getSubModules = type.getSubModules;
+        withSubModules = modules: lib.types.dag.of (type.withSubModules modules);
+        functor = lib.types.functor "dag.of" // {wrapped = type;};
+        children = {
+          element = type;
+          resolved = resolved;
+        };
+      };
+
+    ## Create a type that allows a DAG entry of a given type.
+    ##
+    ## @type Attrs -> Attrs
+    entry = type: let
+      submodule = lib.types.submodule ({name}: {
+        options = {
+          value = lib.options.create {
+            type = type;
+          };
+          before = lib.options.create {
+            type = lib.types.list.of lib.types.string;
+          };
+          after = lib.options.create {
+            type = lib.types.list.of lib.types.string;
+          };
+        };
+      });
+      normalize = definition: let
+        value =
+          if definition ? priority
+          then lib.modules.order definition.priority definition.value
+          else definition.value;
+      in
+        if lib.dag.validate.entry definition.value
+        then definition.value
+        else lib.dag.entry.anywhere value;
+    in
+      lib.types.create {
+        name = "DagEntry";
+        description = "DagEntry (${type.description})";
+        merge = location: definitions:
+          submodule.merge
+          location
+          (
+            builtins.map
+            (definition: {
+              __file__ = definition.__file__;
+              value = normalize definition;
+            })
+            definitions
+          );
+      };
+  };
 }

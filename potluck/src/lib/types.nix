@@ -58,7 +58,8 @@ in {
         };
 
         description = lib.options.create {
-          type = lib.types.string;
+          type = lib.types.nullish lib.types.string;
+          default.value = null;
           description = "The description for the package.";
         };
 
@@ -112,7 +113,7 @@ in {
         name = lib.options.create {
           type = lib.types.string;
           default = {
-            value = "${config.pname}-${config.version}";
+            value = "${config.pname}-${config.version or "unknown"}";
             text = "\${config.pname}-\${config.version}";
           };
           description = "The name of the package.";
@@ -132,6 +133,13 @@ in {
 
         meta = lib.options.create {
           type = lib'.types.meta;
+          default = {
+            text = "{ name = <package>.pname; }";
+            value = {
+              name = config.pname;
+            };
+          };
+          description = "The metadata for the package.";
         };
 
         env = lib.options.create {
@@ -141,7 +149,11 @@ in {
         };
 
         phases = lib.options.create {
-          type = lib.types.attrs.of lib.types.string;
+          type = lib.types.dag.of (
+            lib.types.either
+            lib.types.string
+            (lib.types.function lib.types.string)
+          );
           default.value = {};
           description = "Phases for the package's builder to use.";
         };

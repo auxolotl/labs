@@ -130,6 +130,54 @@ lib: {
         builtins.match "[ \t\n]*" value != null;
     };
 
+    order = {
+      ## Create an ordered string that will be placed anywhere.
+      ##
+      ## @type String -> OrderedString
+      anywhere = value: {
+        inherit value;
+        deps = [];
+      };
+
+      ## Create an ordered string that will be placed before its dependencies.
+      ##
+      ## @type String -> List String -> OrderedString
+      after = deps: value: {
+        inherit deps value;
+      };
+
+      ## Apply the order for a list of ordered strings. This function also supports
+      ## plain strings in the list so long as they have an accompanying static definition
+      ## provided.
+      ##
+      ## @type Attrs -> List (OrderedString | String)
+      apply = static: items: let
+        process = complete: remaining: let
+          next = builtins.head remaining;
+
+          before = process complete next.deps;
+          after = process before.complete (builtins.tail remaining);
+        in
+          if builtins.length remaining == 0
+          then {
+            inherit complete;
+            result = [];
+          }
+          else if builtins.isAttrs next
+          then {
+            inherit complete;
+            result = before.result ++ [next.value] ++ after.result;
+          }
+          else
+            process
+            (complete // {"${next}" = true;})
+            ([static.${next}] ++ builtins.tail remaining);
+
+        processed = process {} items;
+      in
+        processed.result;
+    };
+
     ## Return a given string if a condition is true, otherwise return
     ## an empty string.
     ##

@@ -1,6 +1,26 @@
 {
   "nodes": {
-    "root": {}
+    "lib": {
+      "locked": {
+        "dir": "lib",
+        "dirtyRev": "f24f0876a9103c7adb8120ce9709fb90c73f2a7c-dirty",
+        "dirtyShortRev": "f24f087-dirty",
+        "lastModified": 1718105966,
+        "narHash": "sha256-L68G29+bPmwZSERg3VYXdfont/w+mssmWnrs6tyBijk=",
+        "type": "git",
+        "url": "file:../?dir=lib"
+      },
+      "original": {
+        "dir": "lib",
+        "type": "git",
+        "url": "file:../?dir=lib"
+      }
+    },
+    "root": {
+      "inputs": {
+        "lib": "lib"
+      }
+    }
   },
   "root": "root",
   "version": 7

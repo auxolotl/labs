@@ -2,16 +2,13 @@
   description = "A set of foundational packages required for bootstrapping a larger package set.";
 
   inputs = {
-    # TODO: When this project is moved to its own repository we will want to add
-    # inputs for the relevant dependencies.
-    # lib = {
-    #   url = "path:../lib";
-    # };
+    lib = {
+      url = "git+file:../?dir=lib";
+    };
   };
 
   outputs = inputs: let
-    # inherit (inputs.lib) lib;
-    lib = import ./../lib;
+    inherit (inputs.lib) lib;
 
     modules = import ./src;
 

@@ -7,26 +7,34 @@
         ]
       },
       "locked": {
-        "lastModified": 1,
-        "narHash": "sha256-CDfGWoJg+7i9z6quwh/WXuTkOhqKme73dUTvWCvJ8EA=",
-        "path": "../foundation",
-        "type": "path"
+        "dir": "foundation",
+        "dirtyRev": "f24f0876a9103c7adb8120ce9709fb90c73f2a7c-dirty",
+        "dirtyShortRev": "f24f087-dirty",
+        "lastModified": 1718105966,
+        "narHash": "sha256-cvGKyJzoPAXjuM+YDpQM30qwshgoYZmAYtJywFPyfGI=",
+        "type": "git",
+        "url": "file:../?dir=foundation"
       },
       "original": {
-        "path": "../foundation",
-        "type": "path"
+        "dir": "foundation",
+        "type": "git",
+        "url": "file:../?dir=foundation"
       }
     },
     "lib": {
       "locked": {
-        "lastModified": 1,
-        "narHash": "sha256-TtgysWL53BK3f3JrPFunjzJaXWaDG2RbuPMglCwATOY=",
-        "path": "../lib",
-        "type": "path"
+        "dir": "lib",
+        "dirtyRev": "f24f0876a9103c7adb8120ce9709fb90c73f2a7c-dirty",
+        "dirtyShortRev": "f24f087-dirty",
+        "lastModified": 1718105966,
+        "narHash": "sha256-cvGKyJzoPAXjuM+YDpQM30qwshgoYZmAYtJywFPyfGI=",
+        "type": "git",
+        "url": "file:../?dir=lib"
       },
       "original": {
-        "path": "../lib",
-        "type": "path"
+        "dir": "lib",
+        "type": "git",
+        "url": "file:../?dir=lib"
       }
     },
     "root": {

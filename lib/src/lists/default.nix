@@ -29,6 +29,56 @@ lib: {
         isLess = a: b: (lib.lists.compare lib.numbers.compare (builtins.head a) (builtins.head b)) < 0;
       in
         builtins.map (x: builtins.elemAt x 1) (builtins.sort isLess prepared);
+
+      ## Perform a topographic sort on a list of items. The predicate function determines whether
+      ## its first argument comes before the second argument.
+      ##
+      ## @type (a -> a -> Bool) -> List a -> List a
+      topographic = predicate: list: let
+        searched = lib.lists.search.depthFirst true predicate list;
+        results = lib.lists.sort.topographic predicate (searched.visited ++ searched.rest);
+      in
+        if builtins.length list < 2
+        then {result = list;}
+        else if searched ? cycle
+        then {
+          loops = searched.loops;
+          cycle = lib.lists.reverse ([searched.cycle] ++ searched.visited);
+        }
+        else if results ? cycle
+        then results
+        else {
+          result = [searched.minimal] ++ results.result;
+        };
+    };
+
+    search = {
+      ## Perform a depth first search on a list. The supplied predicate function determines whether
+      ## its first argument comes before the second argument.
+      ##
+      ## @type Bool -> (a -> a -> Bool) -> List a
+      depthFirst = isAcyclical: predicate: list: let
+        process = current: visited: rest: let
+          loops = builtins.filter (value: predicate value current) visited;
+          partitioned = builtins.partition (value: predicate value current) rest;
+        in
+          if isAcyclical && (builtins.length loops > 0)
+          then {
+            cycle = current;
+            inherit loops visited rest;
+          }
+          else if builtins.length partitioned.right == 0
+          then {
+            minimal = current;
+            inherit visited rest;
+          }
+          else
+            process
+            (builtins.head partitioned.right)
+            ([current] ++ visited)
+            (builtins.tail partitioned.right ++ partitioned.wrong);
+      in
+        process (builtins.head list) [] (builtins.tail list);
     };
 
     ## Map a list using both the index and value of each item. The
